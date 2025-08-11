@@ -17,7 +17,12 @@ class AppraisalFormCategory extends Model
 
     public function appraisalForms()
     {
-        return $this->hasMany(AppraisalForm::class, 'appraisal_form_category_id');
+        return $this->belongsToMany(
+            AppraisalForm::class,
+            'appraisal_form_category_form',
+            'appraisal_form_category_id',
+            'appraisal_form_id'
+        );
     }
 
 }

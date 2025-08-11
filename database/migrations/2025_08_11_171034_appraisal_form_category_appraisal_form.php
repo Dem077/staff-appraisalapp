@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('appraisal_form_categories', function (Blueprint $table) {
+        Schema::create('appraisal_form_category_form', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->comment('Name of the appraisal form category');
+            $table->foreignId('appraisal_form_category_id')->constrained()->onDelete('cascade');
+            $table->foreignId('appraisal_form_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -23,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('appraisal_form_categories');
+        Schema::dropIfExists('appraisal_form_category_form');
     }
 };
