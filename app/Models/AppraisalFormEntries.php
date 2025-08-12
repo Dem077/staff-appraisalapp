@@ -7,9 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class AppraisalFormEntries extends Model
 {
     protected $fillable = [
-        'appraisal_form_assigned_to_staff_id',
+        'appraisal_assigned_to_staff_id',
         'question_id',
-        'answer',
         'staff_score',
         'supervisor_score',
         'hidden',
@@ -17,7 +16,7 @@ class AppraisalFormEntries extends Model
 
     public function appraisalFormAssignedToStaff()
     {
-        return $this->belongsTo(AppraisalFormAssignedToStaff::class);
+        return $this->belongsTo(AppraisalFormAssignedToStaff::class , 'appraisal_assigned_to_staff_id');
     }
 
     public function question()

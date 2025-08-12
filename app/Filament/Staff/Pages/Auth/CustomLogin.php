@@ -66,8 +66,27 @@ class CustomLogin extends BaseLoginPage
 
             // Find or create local staff record
             $staff = \App\Models\Staff::updateOrCreate(
-                ['email' => $staffData['email'],
-                'active' => $staffData['active']],
+                [
+                    'name' => $staffData['name'],
+                    'api_id' => $staffData['id'],
+                    'email' => $staffData['email'],
+                    'email_verified_at' => $staffData['email_verified_at'],
+                    'emp_no' => $staffData['emp_no'],
+                    'gender' => $staffData['gender'],
+                    'designation' => $staffData['designation'],
+                    'mobile' => $staffData['mobile'],
+                    'phone' => $staffData['phone'],
+                    'department_id' => $staffData['department_id'],
+                    'active' => $staffData['active'],
+                    'location_id' => $staffData['location_id'],
+                    'nid' => $staffData['nid'],
+                    'supervisor_id' => $staffData['supervisor_id'],
+                    'joined_date' => $staffData['joined_date'],
+                    'is_annual_applicable' => $staffData['is_annual_applicable'],
+                    'profile_photo_path' => $staffData['profile_photo_path'],
+                    'profile_photo_url' => $staffData['profile_photo_url'],
+                    'external_id' => $staffData['external_id'],
+                ],
                 [
                     'name' => $staffData['name'],
                     'api_id' => $staffData['id'],

@@ -40,7 +40,15 @@ class StaffResource extends Resource
                     ->maxLength(255),
                 Forms\Components\Toggle::make('active')
                     ->required(),
-                
+                Forms\Components\Section::make('Roles')
+                    ->schema([
+                        Forms\Components\Select::make('roles')
+                            ->required()
+                            ->multiple()
+                            ->relationship('roles', 'name')
+                            ->label('Roles'),
+                    ])
+                    ->columns(1),
             ]);
     }
 

@@ -14,6 +14,8 @@ class Staff extends Authenticatable implements FilamentUser, HasAvatar
 {
     use SoftDeletes,HasRoles, Notifiable;
 
+    protected $guard_name = 'staff'; 
+
     protected $fillable = [
         'name',
         'api_id',

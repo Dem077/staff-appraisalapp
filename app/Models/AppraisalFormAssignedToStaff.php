@@ -34,6 +34,6 @@ class AppraisalFormAssignedToStaff extends Model
 
    public function appraisalFormEntries()
    {
-       return $this->hasMany(AppraisalFormEntries::class, 'appraisal_form_assigned_to_staff_id');
+       return $this->hasMany(AppraisalFormEntries::class, 'appraisal_assigned_to_staff_id');
    }
 }
