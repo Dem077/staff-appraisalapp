@@ -10,7 +10,7 @@ class CreateAppraisalFormAssignedToStaff extends CreateRecord
 {
     protected static string $resource = AppraisalFormAssignedToStaffResource::class;
 
-        protected function afterCreate(): void
+    protected function afterCreate(): void
     {
         $questions = \App\Models\AppraisalFormQuestions::whereIn(
                         'appraisal_form_key_behavior_id',

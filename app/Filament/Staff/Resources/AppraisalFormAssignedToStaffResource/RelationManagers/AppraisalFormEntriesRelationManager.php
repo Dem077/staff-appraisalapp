@@ -3,11 +3,14 @@
 namespace App\Filament\Staff\Resources\AppraisalFormAssignedToStaffResource\RelationManagers;
 
 use Filament\Forms;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class AppraisalFormEntriesRelationManager extends RelationManager
@@ -55,15 +58,64 @@ class AppraisalFormEntriesRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\Action::make('sync')
+                    ->label('Sync Indicators')
+                    ->action(function ($livewire) {
+                        $record = $livewire->getOwnerRecord(); // The AppraisalFormAssignedToStaff model
+
+                        // Get all question IDs for this assigned form
+                        $questionIds = \App\Models\AppraisalFormQuestions::whereIn(
+                            'appraisal_form_key_behavior_id',
+                            \App\Models\AppraisalFormKeyBehavior::whereIn(
+                                'appraisal_form_category_id',
+                                $record->appraisalForm->appraisalFormCategories->pluck('id')
+                            )->pluck('id')
+                        )->pluck('id');
+
+                        // Sync entries using updateOrCreate
+                        foreach ($questionIds as $questionId) {
+                            \App\Models\AppraisalFormEntries::updateOrCreate(
+                                [
+                                    'appraisal_assigned_to_staff_id' => $record->id,
+                                    'question_id' => $questionId,
+                                ],
+                                [
+                                    'staff_score' => null,
+                                    'supervisor_score' => null,
+                                    'hidden' => false,
+                                ]
+                            );
+                        }
+                        Notification::make()
+                            ->title('Success')
+                            ->body('Indicators synced successfully!')
+                            ->success()
+                            ->send();
+                    })
+                    ->color('success'),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\BulkAction::make('hide_all')
+                    ->label('Mark/Unmark (N/A) ')
+                    ->action(function (Collection $records) {
+                        
+                        foreach ($records as $record) {
+                            if ($record->hidden) {
+                                $record->update(['hidden' => false]);
+                            }else{
+                                $record->update(['hidden' => true]);
+                            }
+                        }
+                        
+                        Notification::make()
+                            ->title('Success')
+                            ->body('All selected entries marked Successfully.')
+                            ->success()
+                            ->send();
+                    }),
                 ]),
             ]);
     }

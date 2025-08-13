@@ -35,6 +35,7 @@ class AppraisalFormAssignedToStaffResource extends Resource
                 Forms\Components\Select::make('appraisal_form_id')
                     ->relationship('appraisalForm', 'name')
                     ->native(false)
+                    ->disabledOn('edit')
                     ->required(),
                 Forms\Components\Select::make('staff_id')
                     ->relationship('staff', 'name')
@@ -61,6 +62,7 @@ class AppraisalFormAssignedToStaffResource extends Resource
                     ->getOptionLabelFromRecordUsing(fn (Model $record) => "{$record->name} ({$record->emp_no})"),
                 Forms\Components\TextInput::make('supervisor_id')
                     ->required()
+                    ->hiddenOn('edit')
                     ->default(fn (Forms\Get $get) => $get('supervisor_id'))
                     ->reactive()
                     ->live()
