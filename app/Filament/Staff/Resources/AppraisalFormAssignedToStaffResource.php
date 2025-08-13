@@ -106,6 +106,12 @@ class AppraisalFormAssignedToStaffResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('fill_form')
+                ->label('Fill Form')
+                    ->button()
+                    ->color('warning')
+                    ->url(fn($record) => route('apraisal-form-fill', ['record' => $record]))
+                    ->openUrlInNewTab()
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

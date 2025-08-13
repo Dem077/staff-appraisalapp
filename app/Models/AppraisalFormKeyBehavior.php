@@ -21,3 +21,4 @@ class AppraisalFormKeyBehavior extends Model
         return $this->hasMany(AppraisalFormQuestions::class, 'appraisal_form_key_behavior_id');
     }
 }
+ 

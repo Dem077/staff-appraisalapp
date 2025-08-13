@@ -24,3 +24,4 @@ class AppraisalFormEntries extends Model
         return $this->belongsTo(AppraisalFormQuestions::class, 'question_id');
     }
 }
+ 

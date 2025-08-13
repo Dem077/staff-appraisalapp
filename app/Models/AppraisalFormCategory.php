@@ -24,5 +24,5 @@ class AppraisalFormCategory extends Model
             'appraisal_form_id'
         );
     }
-
+ 
 }
