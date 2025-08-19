@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class FormsAssignedToHod extends Model
 {
-    protected $table = 'forms_assigned_to_hod';
 
     protected $fillable = [
         'appraisal_form_id',
