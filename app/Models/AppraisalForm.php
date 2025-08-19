@@ -9,6 +9,8 @@ class AppraisalForm extends Model
     protected $fillable = [
         'name',
         'description',
+        'is_active',
+        'level',
         'type',
     ];
 

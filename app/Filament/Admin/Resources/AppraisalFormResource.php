@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources;
 
+use App\Enum\AppraisalFormLevel;
 use App\Enum\AppraisalFormType;
 use App\Filament\Admin\Resources\AppraisalFormResource\Pages;
 use App\Filament\Admin\Resources\AppraisalFormResource\RelationManagers;
@@ -35,6 +36,12 @@ class AppraisalFormResource extends Resource
                     ->required()
                     ->native(false)
                     ->options(AppraisalFormType::class),
+                Forms\Components\Toggle::make('is_active')
+                    ->default(true),
+                Forms\Components\Select::make('level')
+                    ->required()
+                    ->native(false)
+                    ->options(AppraisalFormLevel::class),
                 Forms\Components\Textarea::make('description')
                     ->columnSpanFull(),
             ]);
@@ -47,6 +54,8 @@ class AppraisalFormResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('type'),
+                Tables\Columns\ToggleColumn::make('is_active'),
+                Tables\Columns\TextColumn::make('level'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

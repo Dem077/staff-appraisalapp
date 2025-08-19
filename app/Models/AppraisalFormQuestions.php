@@ -20,4 +20,15 @@ class AppraisalFormQuestions extends Model
     {
         return $this->hasMany(AppraisalFormEntries::class, 'question_id');
     }
+
+    public function hodassigneeFormEntries()
+    {
+        return $this->hasMany(HodFormAssigneeEntry::class, 'question_id');
+    }
+
+    
+    public function hodFormEntries()
+    {
+        return $this->hasMany(HodFormEntries::class, 'question_id');
+    }
 }

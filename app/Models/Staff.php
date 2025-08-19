@@ -9,10 +9,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Filament\Panel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Staff extends Authenticatable implements FilamentUser, HasAvatar
 {
-    use SoftDeletes,HasRoles, Notifiable;
+    use SoftDeletes,HasRoles, Notifiable, HasFactory;
 
     protected $guard_name = 'staff'; 
 
@@ -71,5 +72,15 @@ class Staff extends Authenticatable implements FilamentUser, HasAvatar
     public function supervisor()
     {
         return $this->hasMany(AppraisalFormAssignedToStaff::class, 'supervisor_id');
+    }
+
+    public function formsAssignedToHod()
+    {
+        return $this->hasMany(FormsAssignedToHod::class, 'hod_id');
+    }
+
+    public function hodAssignees()
+    {
+        return $this->hasMany(HodFormAssignee::class, 'assignee_id');
     }
 }
