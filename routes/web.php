@@ -151,3 +151,127 @@ Route::post('/apraisal-form-fill/{record}', function ($record) {
             ->success()
             ->send();
 })->name('apraisal-form-fill.submit');
+
+Route::get('/supervisor-apraisal-form-fill/{record}', function ($record) {
+    $assigned = \App\Models\AppraisalFormAssignedToStaff::findOrFail($record);
+
+    $ratingScale = [
+        ['label' => '1', 'description' => "Doesn't meet requirements"],
+        ['label' => '2', 'description' => "Meets some requirements"],
+        ['label' => '3', 'description' => "Meets all requirements"],
+        ['label' => '4', 'description' => "Exceeds some requirements, fully met others"],
+        ['label' => '5', 'description' => "Exceeds all requirements"],
+    ];
+    $department = ShortCuts::callgetapi('/users/department', ['id' => $assigned->staff->api_id,])->json();
+    $supervisor = ShortCuts::callgetapi('/users/supervisor', ['id' => $assigned->staff->api_id,])->json();
+    $assigned->staff->department = $department['name'];
+    $assigned->staff->supervisor = $supervisor['name'];
+
+    // Build appraisalData from related models
+    $appraisalData = [];
+    foreach ($assigned->appraisalForm->appraisalFormCategories as $category) {
+        $categorySection = [
+            'name' => $category->name,
+            'keyBehaviors' => [],
+        ];
+        foreach ($category->appraisalFormKeyBehaviors as $behavior) {
+            $behaviorSection = [
+                'name' => $behavior->name,
+                'indicators' => [],
+            ];
+            foreach ($behavior->appraisalFormQuestions as $question) {
+                $entry = \App\Models\AppraisalFormEntries::where('appraisal_assigned_to_staff_id', $assigned->id)
+                    ->where('question_id', $question->id)
+                    ->where('hidden', false)
+                    ->first();
+                if ($entry) {
+                    $behaviorSection['indicators'][] = [
+                        'text' => $question->behavioral_indicators,
+                        'selfScore' =>  $entry->staff_score,
+                        'supervisorScore' =>  '',
+                        'supervisorcomment' =>  '',
+                        'question_id' => $question->id,
+                    ];
+                }
+            }
+            if (count($behaviorSection['indicators'])) {
+                $categorySection['keyBehaviors'][] = $behaviorSection;
+            }
+        }
+        if (count($categorySection['keyBehaviors'])) {
+            $appraisalData[] = $categorySection;
+        }
+    }
+    return view('supervisor-apraisal-form-fill', [
+        'assigned' => $assigned,
+        'ratingScale' => $ratingScale,
+        'appraisalData' => $appraisalData,
+    ]);
+})->name('supervisor-apraisal-form-fill');
+
+Route::post('/supervisor-apraisal-form-fill/{record}', function ($record) {
+    $request = request()->all();
+    $assigned = \App\Models\AppraisalFormAssignedToStaff::findOrFail($record);
+    $answers = $request['appraisalScores'] ?? [];
+
+    // Rebuild appraisalData from relations (same as GET route)
+    $appraisalData = [];
+    foreach ($assigned->appraisalForm->appraisalFormCategories as $category) {
+        $categorySection = [
+            'name' => $category->name,
+            'keyBehaviors' => [],
+        ];
+        foreach ($category->appraisalFormKeyBehaviors as $behavior) {
+            $behaviorSection = [
+                'name' => $behavior->name,
+                'indicators' => [],
+            ];
+            foreach ($behavior->appraisalFormQuestions as $question) {
+                $entry = \App\Models\AppraisalFormEntries::where('appraisal_assigned_to_staff_id', $assigned->id)
+                    ->where('question_id', $question->id)
+                    ->where('hidden', false)
+                    ->first();
+                if ($entry) {
+                    $behaviorSection['indicators'][] = [
+                        'text' => $question->behavioral_indicators,
+                        'selfScore' => $entry->staff_score,
+                        'supervisorScore' => $entry->supervisor_score,
+                        'supervisorcomment' => $entry->supervisor_comment,
+                        'question_id' => $question->id,
+                    ];
+                }
+            }
+            if (count($behaviorSection['indicators'])) {
+                $categorySection['keyBehaviors'][] = $behaviorSection;
+            }
+        }
+        if (count($categorySection['keyBehaviors'])) {
+            $appraisalData[] = $categorySection;
+        }
+    }
+
+    // Only update supervisor fields
+    foreach ($answers as $categoryIndex => $behaviors) {
+        foreach ($behaviors as $behaviorIndex => $indicators) {
+            foreach ($indicators as $indicatorIndex => $answerArr) {
+                $questionId = $appraisalData[$categoryIndex]['keyBehaviors'][$behaviorIndex]['indicators'][$indicatorIndex]['question_id'] ?? null;
+                if ($questionId) {
+                    \App\Models\AppraisalFormEntries::where('appraisal_assigned_to_staff_id', $assigned->id)
+                        ->where('question_id', $questionId)
+                        ->update([
+                            'supervisor_score' => $answerArr['supervisor_score'] ?? null,
+                            'supervisor_comment' => $answerArr['supervisor_comment'] ?? null,
+                        ]);
+                }
+            }
+        }
+    }
+
+    $assigned->update([
+        'supervisor_comment' => $request['supervisorComments'] ?? '',
+        'status' => \App\Enum\AssignedFormStatus::Complete->value,
+    ]);
+
+    return redirect()->route('filament.staff.resources.appraisal-form-assigned-to-staffs.index')
+        ->with('success', 'Supervisor appraisal submitted successfully!');
+})->name('supervisor-apraisal-form-fill.submit');

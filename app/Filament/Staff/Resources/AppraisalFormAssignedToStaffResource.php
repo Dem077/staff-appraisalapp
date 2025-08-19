@@ -7,6 +7,7 @@ use App\Filament\Staff\Resources\AppraisalFormAssignedToStaffResource\Pages;
 use App\Filament\Staff\Resources\AppraisalFormAssignedToStaffResource\RelationManagers;
 use App\Models\AppraisalFormAssignedToStaff;
 use App\Models\Staff;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Form;
@@ -16,13 +17,36 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
-class AppraisalFormAssignedToStaffResource extends Resource
+class AppraisalFormAssignedToStaffResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = AppraisalFormAssignedToStaff::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    public static function getPermissionPrefixes(): array
+        {
+            return [
+                'view_any',
+                'view',
+                'create',
+                'update',
+                'delete',
+                'assign_appraisal',
+                'delete_any',
+                'force_delete',
+                'restore',
+                'force_delete_any',
+            ];
+        }
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('supervisor_id' , Auth::user()->id)
+            ->orwhere('staff_id', Auth::user()->id);
+    }
 
     public static function form(Form $form): Form
     {
@@ -93,7 +117,19 @@ class AppraisalFormAssignedToStaffResource extends Resource
                 Tables\Columns\TextColumn::make('supervisor.name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
-                    ->badge(),
+                    ->badge()
+                    ->state(fn ($record) => match ($record->status) {
+                        AssignedFormStatus::PendingStaff->value => 'Pending Staff',
+                        AssignedFormStatus::PendingSupervisor->value => 'Pending Supervisor',
+                        AssignedFormStatus::Complete->value => 'Complete',
+                        default => 'Unknown',
+                    })
+                    ->color(fn ($record) => match ($record->status) {
+                        AssignedFormStatus::PendingStaff->value => 'gray',
+                        AssignedFormStatus::PendingSupervisor->value => 'primary',
+                        AssignedFormStatus::Complete->value => 'success',
+                        default => 'gray',
+                    }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -107,13 +143,22 @@ class AppraisalFormAssignedToStaffResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->visible(fn($record) => $record->status === AssignedFormStatus::PendingStaff->value && $record->supervisor_id === Auth::user()->id),
                 Tables\Actions\Action::make('fill_form')
-                ->label('Fill Form')
-                    ->button()
-                    ->color('warning')
-                    ->url(fn($record) => route('apraisal-form-fill', ['record' => $record]))
-                    ->openUrlInNewTab()
+                    ->label('Fill Form')
+                        ->button()
+                        ->color('warning')
+                        ->visible(fn($record) => $record->status === AssignedFormStatus::PendingStaff->value && $record->staff_id === Auth::user()->id)
+                        ->url(fn($record) => route('apraisal-form-fill', ['record' => $record]))
+                        ->openUrlInNewTab(),
+                Tables\Actions\Action::make('supervisor_fill_form')
+                    ->label('Fill Form')
+                        ->button()
+                        ->color('success')
+                        ->visible(fn($record) => $record->status === AssignedFormStatus::PendingSupervisor->value && $record->supervisor_id === Auth::user()->id)
+                        ->url(fn($record) => route('supervisor-apraisal-form-fill', ['record' => $record]))
+                        ->openUrlInNewTab()
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

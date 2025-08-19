@@ -23,6 +23,7 @@ class ListAppraisalFormAssignedToStaff extends ListRecords
             Actions\Action::make('bulk_create')
                 ->label('Assign Form to Staff')
                 ->button()
+                ->visible(fn() => Auth::user()->can('assign_appraisal_appraisal::form::assigned::to::staff'))
                 ->color('success')
                 ->form([
                     \Filament\Forms\Components\Select::make('appraisal_form_id')

@@ -19,6 +19,12 @@ class AppraisalFormAssignedToStaffPolicy
         return false;
     }
 
+    public function assign($user): bool
+    {
+        return $this->can($user, 'assign_appraisal_appraisal::form::assigned::to::staff');
+    }
+
+
     public function viewAny($user): bool
     {
         return $this->can($user, 'view_any_appraisal::form::assigned::to::staff');
