@@ -8,8 +8,8 @@ class HodFormEntries extends Model
 {
     protected $fillable = [
         'question_id',
-        'hod_assignee_id',
-        'score',
+        'forms_assigned_to_hod_id',
+        'self_score',
         'comment',
         'hidden',
     ];

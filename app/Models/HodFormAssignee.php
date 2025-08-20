@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class HodFormassignee extends Model
 {
 
+    protected $table = 'hod_form_assignees';
+
     protected $fillable = [
         'assignee_type',
         'assignee_id',
@@ -26,6 +28,6 @@ class HodFormassignee extends Model
 
     public function hodFormAssigneeEntries()
     {
-        return $this->hasMany(HodFormAssigneeEntry::class, 'hod_assignee_id');
+        return $this->hasMany(HodFormAssigneeEntry::class, 'hod_form_assignee_id');
     }
 }

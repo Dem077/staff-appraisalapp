@@ -8,6 +8,7 @@ class FormsAssignedToHod extends Model
 {
 
     protected $fillable = [
+        'assigned_date',
         'appraisal_form_id',
         'hod_id',
         'hod_comment',

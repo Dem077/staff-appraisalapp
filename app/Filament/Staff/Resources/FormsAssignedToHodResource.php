@@ -5,6 +5,7 @@ namespace App\Filament\Staff\Resources;
 use App\Filament\Staff\Resources\FormsAssignedToHodResource\Pages;
 use App\Filament\Staff\Resources\FormsAssignedToHodResource\RelationManagers;
 use App\Models\FormsAssignedToHod;
+use App\Models\Staff;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -12,8 +13,10 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class FormsAssignedToHodResource extends Resource implements HasShieldPermissions
 {
@@ -85,7 +88,36 @@ class FormsAssignedToHodResource extends Resource implements HasShieldPermission
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('assigned_date')
+                    ->date()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('appraisalForm.name')
+                    ->label('Appraisal Form')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('staff.name')
+                    ->label('HOD Name')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->formatStateUsing(function ($state) {
+                        return match ($state) {
+                            'pending_staff_appraisal' => 'Pending Staff Appraisal',
+                            'pending_assignee_appraisal' => 'Pending Assignee Review',
+                            'complete' => 'Completed',
+                            default => 'Unknown',
+                        };
+                    })
+                    ->color(fn ($state) => match ($state) {
+                        'pending_staff_appraisal' => 'warning',
+                        'pending_assignee_appraisal' => 'info',
+                        'complete' => 'success',
+                        default => 'secondary',
+                    })
+                    ->sortable()
+                    ->searchable(),
             ])
             ->filters([
                 //

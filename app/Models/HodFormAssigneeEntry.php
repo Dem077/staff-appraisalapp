@@ -8,7 +8,7 @@ class HodFormAssigneeEntry extends Model
 {
     protected $fillable = [
         'question_id',
-        'hod_assignee_id',
+        'hod_form_assignee_id',
         'score',
         'comment',
         'hidden',
@@ -16,7 +16,7 @@ class HodFormAssigneeEntry extends Model
 
     public function hodFormAssignee()
     {
-        return $this->belongsTo(HodFormAssignee::class, 'hod_assignee_id');
+        return $this->belongsTo(HodFormAssignee::class, 'hod_form_assignee_id');
     }
 
     public function question()
