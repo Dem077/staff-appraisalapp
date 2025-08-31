@@ -2,9 +2,11 @@
 
 namespace App\Filament\Staff\Resources;
 
+use App\Enum\HODFormassigneeStatus;
 use App\Filament\Staff\Resources\FormsAssignedToHodResource\Pages;
 use App\Filament\Staff\Resources\FormsAssignedToHodResource\RelationManagers;
 use App\Models\FormsAssignedToHod;
+use App\Models\HodFormassignee;
 use App\Models\Staff;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms;
@@ -14,7 +16,6 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
@@ -22,12 +23,21 @@ class FormsAssignedToHodResource extends Resource implements HasShieldPermission
 {
     protected static ?string $model = FormsAssignedToHod::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Assign Appraisals';
+
+    protected static ?string $navigationLabel = 'Management Team Leaders';
+
+    protected static ?string $label = 'Appraisal Assignment Management Team Leaders';
+
+    protected static ?string $navigationIcon = 'heroicon-o-users';
+
+
 
     public static function getPermissionPrefixes(): array
     {
         return [
             'view_any',
+            'view_all',
             'view',
             'create',
             'update',
@@ -39,11 +49,19 @@ class FormsAssignedToHodResource extends Resource implements HasShieldPermission
             'force_delete_any',
         ];
     }
-    // public static function getEloquentQuery(): Builder
-    // {
-    //     return parent::getEloquentQuery()
-    //         ->where('hod_id', Auth::user()->id);
-    // }
+     public static function getEloquentQuery(): Builder
+     {
+         if(Auth::user()->can('view_all', FormsAssignedToHod::class)){
+             return parent::getEloquentQuery();
+         }
+         else{
+             return parent::getEloquentQuery()
+                 ->where('hod_id', Auth::user()->id)
+                 ->orWhereHas('hodFormAssignees', function (Builder $query) {;
+                     $query->where('assignee_id', Auth::user()->id);
+                 });
+        }
+     }
 
     public static function form(Form $form): Form
     {
@@ -71,7 +89,7 @@ class FormsAssignedToHodResource extends Resource implements HasShieldPermission
                             ])->get(config('app.apiurl') . '/users/supervisor', [
                                     'id' => $user,
                                 ]);
-                                
+
                             $userid = Staff::where('api_id',  $supervisor->json()['id'])->pluck('id')->first();
                                 $set('supervisor_id', $userid);
                         }
@@ -102,20 +120,6 @@ class FormsAssignedToHodResource extends Resource implements HasShieldPermission
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
                     ->badge()
-                    ->formatStateUsing(function ($state) {
-                        return match ($state) {
-                            'pending_staff_appraisal' => 'Pending Staff Appraisal',
-                            'pending_assignee_appraisal' => 'Pending Assignee Review',
-                            'complete' => 'Completed',
-                            default => 'Unknown',
-                        };
-                    })
-                    ->color(fn ($state) => match ($state) {
-                        'pending_staff_appraisal' => 'warning',
-                        'pending_assignee_appraisal' => 'info',
-                        'complete' => 'success',
-                        default => 'secondary',
-                    })
                     ->sortable()
                     ->searchable(),
             ])
@@ -124,6 +128,24 @@ class FormsAssignedToHodResource extends Resource implements HasShieldPermission
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('fill_hod')
+                    ->label('Fill Form')
+                    ->color('warning')
+                    ->visible(fn($record) => $record->status === HODFormassigneeStatus::PendingStaff->value && $record->staff_id ===  auth('staff')->user()?->id)
+                    ->url(fn($record) => route('hod-appraisal-form-fill', ['record' => $record]))
+                    ->openUrlInNewTab(),
+                Tables\Actions\Action::make('fill_hod_assignee')
+                    ->label('Fill Form')
+                    ->color('primary')
+                    ->visible(fn($record) => HodFormassignee::where('assignee_id',auth('staff')->user()->id)->where('forms_assigned_to_hod_id', $record->id)->where('status','pending_staff_appraisal')->first() && $record->status === HODFormassigneeStatus::PendingAssignee->value && $record->hodFormAssignees->contains('assignee_id',  auth('staff')->user()?->id))
+                    ->url(fn($record) => route('assignee-hod-appraisal-form-fill', ['record' => $record]))
+                    ->openUrlInNewTab(),
+                Tables\Actions\Action::make('results')
+                    ->label('View Details')
+                    ->button()
+                    ->color('primary')
+                    ->url(fn($record) => route('filament.staff.resources.forms-assigned-to-hods.results', ['record' => $record]))
+                    ,
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -135,14 +157,17 @@ class FormsAssignedToHodResource extends Resource implements HasShieldPermission
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\HodFormEntriesRelationManager::class,
+            RelationManagers\HodFormAssigneesRelationManager::class,
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListFormsAssignedToHods::route('/'),
+            'assignee-results' => Pages\ViewAssigneeResults::route('/{record}/assignee-results'),
+            'results' => Pages\ViewResults::route('/{record}/results'),
+            'index' => Pages\ListFormsAssignedToHods::route('/'),'appointments' => Pages\HodIndicators::route('/{record}/{hodname}/indicators'),
             'create' => Pages\CreateFormsAssignedToHod::route('/create'),
             'edit' => Pages\EditFormsAssignedToHod::route('/{record}/edit'),
         ];

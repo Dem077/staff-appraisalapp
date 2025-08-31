@@ -24,7 +24,13 @@ class AppraisalFormAssignedToStaffResource extends Resource implements HasShield
 {
     protected static ?string $model = AppraisalFormAssignedToStaff::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Assign Appraisals';
+
+    protected static ?string $navigationLabel = 'Team Leaders / Members';
+
+    protected static ?string $label = 'Appraisal Assignment Team Leaders / Members';
+
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
     public static function getPermissionPrefixes(): array
         {
@@ -74,7 +80,7 @@ class AppraisalFormAssignedToStaffResource extends Resource implements HasShield
                             ])->get(config('app.apiurl') . '/users/supervisor', [
                                     'id' => $user,
                                 ]);
-                                
+
                             $userid = Staff::where('api_id',  $supervisor->json()['id'])->pluck('id')->first();
                                 $set('supervisor_id', $userid);
                         }
@@ -117,19 +123,7 @@ class AppraisalFormAssignedToStaffResource extends Resource implements HasShield
                 Tables\Columns\TextColumn::make('supervisor.name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
-                    ->badge()
-                    ->state(fn ($record) => match ($record->status) {
-                        AssignedFormStatus::PendingStaff->value => 'Pending Staff',
-                        AssignedFormStatus::PendingSupervisor->value => 'Pending Supervisor',
-                        AssignedFormStatus::Complete->value => 'Complete',
-                        default => 'Unknown',
-                    })
-                    ->color(fn ($record) => match ($record->status) {
-                        AssignedFormStatus::PendingStaff->value => 'gray',
-                        AssignedFormStatus::PendingSupervisor->value => 'primary',
-                        AssignedFormStatus::Complete->value => 'success',
-                        default => 'gray',
-                    }),
+                    ->badge(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -150,15 +144,21 @@ class AppraisalFormAssignedToStaffResource extends Resource implements HasShield
                         ->button()
                         ->color('warning')
                         ->visible(fn($record) => $record->status === AssignedFormStatus::PendingStaff->value && $record->staff_id === Auth::user()->id)
-                        ->url(fn($record) => route('apraisal-form-fill', ['record' => $record]))
+                        ->url(fn($record) => route('appraisal-form-fill', ['record' => $record]))
                         ->openUrlInNewTab(),
                 Tables\Actions\Action::make('supervisor_fill_form')
                     ->label('Fill Form')
                         ->button()
                         ->color('success')
                         ->visible(fn($record) => $record->status === AssignedFormStatus::PendingSupervisor->value && $record->supervisor_id === Auth::user()->id)
-                        ->url(fn($record) => route('supervisor-apraisal-form-fill', ['record' => $record]))
-                        ->openUrlInNewTab()
+                        ->url(fn($record) => route('supervisor-appraisal-form-fill', ['record' => $record]))
+                        ->openUrlInNewTab(),
+                Tables\Actions\Action::make('results')
+                    ->label('View Details')
+                        ->button()
+                        ->color('primary')
+                        ->url(fn($record) => route('filament.staff.resources.appraisal-form-assigned-to-staffs.results', ['record' => $record]))
+                        ,
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -177,6 +177,7 @@ class AppraisalFormAssignedToStaffResource extends Resource implements HasShield
     public static function getPages(): array
     {
         return [
+            'results' => Pages\ViewResults::route('/{record}/results'),
             'index' => Pages\ListAppraisalFormAssignedToStaff::route('/'),
             'create' => Pages\CreateAppraisalFormAssignedToStaff::route('/create'),
             'edit' => Pages\EditAppraisalFormAssignedToStaff::route('/{record}/edit'),

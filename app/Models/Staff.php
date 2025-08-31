@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
+use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -13,9 +15,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Staff extends Authenticatable implements FilamentUser, HasAvatar
 {
-    use SoftDeletes,HasRoles, Notifiable, HasFactory;
+    use SoftDeletes,HasRoles, Notifiable, HasFactory, HasPanelShield;
 
-    protected $guard_name = 'staff'; 
+    protected $guard_name = 'staff';
 
     protected $fillable = [
         'name',

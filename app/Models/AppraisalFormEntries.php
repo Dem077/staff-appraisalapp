@@ -11,8 +11,10 @@ class AppraisalFormEntries extends Model
         'question_id',
         'staff_score',
         'supervisor_score',
+        'supervisor_comment',
         'hidden',
     ];
+
 
     public function appraisalFormAssignedToStaff()
     {
@@ -24,4 +26,3 @@ class AppraisalFormEntries extends Model
         return $this->belongsTo(AppraisalFormQuestions::class, 'question_id');
     }
 }
- 

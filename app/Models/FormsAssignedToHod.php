@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enum\HODFormassigneeStatus;
 use Illuminate\Database\Eloquent\Model;
 
 class FormsAssignedToHod extends Model
@@ -11,9 +12,16 @@ class FormsAssignedToHod extends Model
         'assigned_date',
         'appraisal_form_id',
         'hod_id',
+        'status',
         'hod_comment',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'status' =>HODFormassigneeStatus::class,
+        ];
+    }
     public function appraisalForm()
     {
         return $this->belongsTo(AppraisalForm::class, 'appraisal_form_id');

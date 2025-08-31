@@ -79,6 +79,7 @@ class ListFormsAssignedToHods extends ListRecords
                                 ->label('Subordinates')
                                 ->multiple()
                                 ->live()
+                                ->maxItems(3)
                                 ->reactive()
                                 ->options(function (Get $get) {
                                     $selected = $get('selected_staff');

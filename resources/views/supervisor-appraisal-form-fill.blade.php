@@ -24,7 +24,7 @@
         <h1 class="text-2xl md:text-4xl font-extrabold text-center text-green-700 mb-2 leading-tight">Employee Performance Appraisal</h1>
         <p class="text-center text-gray-500 text-base md:text-lg mb-6 md:mb-10 font-medium">Probationary Period Evaluation</p>
 
-        <form method="POST" action="{{ route('supervisor-apraisal-form-fill.submit', $assigned->id) }}" class="space-y-6 md:space-y-8">
+        <form method="POST" action="{{ route('supervisor-appraisal-form-fill.submit', $assigned->id) }}" class="space-y-6 md:space-y-8">
             @csrf
 
             {{-- Employee Information --}}
@@ -66,25 +66,25 @@
                     <div class="bg-gradient-to-r from-green-600 to-blue-400 text-white p-3 md:p-5 flex items-center gap-2 md:gap-4">
                         <span class="inline-block w-6 md:w-8 h-6 md:h-8 flex-shrink-0 text-white">
                             @switch( $category['name'])
-                                @case('Personal Attributes') 
+                                @case('Personal Attributes')
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                                 @break
-                                @case('Learning & Development') 
+                                @case('Learning & Development')
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open-check"><path d="M8 2H20a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H8"/><path d="M12 2v20"/><path d="M4 15V4a2 2 0 0 1 2-2h2"/><path d="m4 15 2 2 4-4"/></svg>
                                 @break
-                                @case('Teamwork / Relationships') 
+                                @case('Teamwork / Relationships')
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                                 @break
-                                @case('Ethical Conduct') 
+                                @case('Ethical Conduct')
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
                                 @break
-                                @case('Community and Environment') 
+                                @case('Community and Environment')
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-leaf"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21s.5-1.5 2-2c1.8 0 3-0.5 4-2"/></svg>
                                 @break
-                                @case('Awareness of Company') 
+                                @case('Awareness of Company')
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-building"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9.5 16h5"/><path d="M9.5 12h5"/><path d="M9.5 8h5"/></svg>
                                 @break
-                                @default 
+                                @default
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                             @endswitch
                         </span>

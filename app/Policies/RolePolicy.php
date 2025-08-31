@@ -18,64 +18,99 @@ class RolePolicy
         }
         return false;
     }
-
-    public function viewAny($user): bool
+    /**
+     * Determine whether the user can view any models.
+     */
+    public function viewAny( $user): bool
     {
-        return $this->can($user, 'view_any_role');
+        return $user->can('view_any_role');
     }
 
-    public function view($user, Role $role): bool
+    /**
+     * Determine whether the user can view the model.
+     */
+    public function view( $user, Role $role): bool
     {
-        return $this->can($user, 'view_role');
+        return $user->can('view_role');
     }
 
-    public function create($user): bool
+    /**
+     * Determine whether the user can create models.
+     */
+    public function create( $user): bool
     {
-        return $this->can($user, 'create_role');
+        return $user->can('create_role');
     }
 
-    public function update($user, Role $role): bool
+    /**
+     * Determine whether the user can update the model.
+     */
+    public function update( $user, Role $role): bool
     {
-        return $this->can($user, 'update_role');
+        return $user->can('update_role');
     }
 
-    public function delete($user, Role $role): bool
+    /**
+     * Determine whether the user can delete the model.
+     */
+    public function delete( $user, Role $role): bool
     {
-        return $this->can($user, 'delete_role');
+        return $user->can('delete_role');
     }
 
-    public function deleteAny($user): bool
+    /**
+     * Determine whether the user can bulk delete.
+     */
+    public function deleteAny( $user): bool
     {
-        return $this->can($user, 'delete_any_role');
+        return $user->can('delete_any_role');
     }
 
-    public function forceDelete($user, Role $role): bool
+    /**
+     * Determine whether the user can permanently delete.
+     */
+    public function forceDelete( $user, Role $role): bool
     {
-        return $this->can($user, '{{ ForceDelete }}');
+        return $user->can('{{ ForceDelete }}');
     }
 
-    public function forceDeleteAny($user): bool
+    /**
+     * Determine whether the user can permanently bulk delete.
+     */
+    public function forceDeleteAny( $user): bool
     {
-        return $this->can($user, '{{ ForceDeleteAny }}');
+        return $user->can('{{ ForceDeleteAny }}');
     }
 
-    public function restore($user, Role $role): bool
+    /**
+     * Determine whether the user can restore.
+     */
+    public function restore( $user, Role $role): bool
     {
-        return $this->can($user, '{{ Restore }}');
+        return $user->can('{{ Restore }}');
     }
 
-    public function restoreAny($user): bool
+    /**
+     * Determine whether the user can bulk restore.
+     */
+    public function restoreAny( $user): bool
     {
-        return $this->can($user, '{{ RestoreAny }}');
+        return $user->can('{{ RestoreAny }}');
     }
 
-    public function replicate($user, Role $role): bool
+    /**
+     * Determine whether the user can replicate.
+     */
+    public function replicate( $user, Role $role): bool
     {
-        return $this->can($user, '{{ Replicate }}');
+        return $user->can('{{ Replicate }}');
     }
 
-    public function reorder($user): bool
+    /**
+     * Determine whether the user can reorder.
+     */
+    public function reorder( $user): bool
     {
-        return $this->can($user, '{{ Reorder }}');
+        return $user->can('{{ Reorder }}');
     }
 }

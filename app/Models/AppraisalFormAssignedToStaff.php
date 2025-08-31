@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enum\AssignedFormStatus;
 use Illuminate\Database\Eloquent\Model;
 
 class AppraisalFormAssignedToStaff extends Model
@@ -17,6 +18,12 @@ class AppraisalFormAssignedToStaff extends Model
        'status',
    ];
 
+    protected function casts(): array
+    {
+        return [
+            'status' => AssignedFormStatus::class,
+        ];
+    }
    public function staff()
    {
        return $this->belongsTo(Staff::class, 'staff_id');
@@ -37,4 +44,3 @@ class AppraisalFormAssignedToStaff extends Model
        return $this->hasMany(AppraisalFormEntries::class, 'appraisal_assigned_to_staff_id');
    }
 }
- 

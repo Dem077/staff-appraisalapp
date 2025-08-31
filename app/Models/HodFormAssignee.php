@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enum\HODFormassigneeType;
 use Illuminate\Database\Eloquent\Model;
 
 class HodFormassignee extends Model
@@ -12,9 +13,17 @@ class HodFormassignee extends Model
     protected $fillable = [
         'assignee_type',
         'assignee_id',
+        'status',
         'assignee_comment',
         'forms_assigned_to_hod_id',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'assignee_type' =>HODFormassigneeType::class,
+        ];
+    }
 
     public function formsAssignedToHod()
     {

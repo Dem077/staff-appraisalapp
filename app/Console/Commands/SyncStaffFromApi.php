@@ -95,6 +95,12 @@ class SyncStaffFromApi extends Command
 
                 $bar->advance();
             }
+            $roleName = 'normal_user';
+            foreach (Staff::where('active', true)->get() as $staff) {
+                if (! $staff->hasRole($roleName)) {
+                    $staff->assignRole($roleName);
+                }
+            }
 
             $bar->finish();
             $this->newLine();

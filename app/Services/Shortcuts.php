@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
+use Spatie\Color\Rgb;
+use Filament\Support\Colors\Color;
 
 class ShortCuts
 {
@@ -21,7 +23,12 @@ class ShortCuts
             'X-API-KEY' => config('app.apikey'),
             'Accept' => 'application/json',
         ])->timeout(10)->post(config('app.apiurl') . $url, $data);
-        
+
+    }
+
+    public static function setcolor($color_rgb)
+    {
+        return Color::hex(Rgb::fromString($color_rgb)->toHex());
     }
 
 }

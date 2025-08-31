@@ -2,8 +2,10 @@
 
 namespace App\Enum;
 
+use App\Services\ShortCuts;
+use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
-enum AssignedFormStatus: string implements HasLabel
+enum AssignedFormStatus: string implements HasLabel , HasColor
 {
     case PendingStaff = 'pending_staff_appraisal';
     case PendingSupervisor = 'pending_supervisor_appraisal';
@@ -17,6 +19,14 @@ enum AssignedFormStatus: string implements HasLabel
             self::PendingStaff => 'Pending Staff Appraisal',
             self::PendingSupervisor => 'Pending Supervisor Appraisal',
             self::Complete => 'Complete',
+        };
+    }
+    public function getColor(): string | array | null
+    {
+        return match ($this) {
+            self::PendingStaff => 'gray',
+            self::PendingSupervisor => 'warning',
+            self::Complete => 'success',
         };
     }
 }
