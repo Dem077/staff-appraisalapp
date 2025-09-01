@@ -2,6 +2,7 @@
 
 namespace App\Filament\Staff\Resources;
 
+use App\Enum\AppraisalFormLevel;
 use App\Enum\AssignedFormStatus;
 use App\Filament\Staff\Resources\AppraisalFormAssignedToStaffResource\Pages;
 use App\Filament\Staff\Resources\AppraisalFormAssignedToStaffResource\RelationManagers;
@@ -63,7 +64,7 @@ class AppraisalFormAssignedToStaffResource extends Resource implements HasShield
                     ->default(now())
                     ->required(),
                 Forms\Components\Select::make('appraisal_form_id')
-                    ->relationship('appraisalForm', 'name')
+                    ->relationship('appraisalForm', 'name' , fn (Builder $query) => $query->where('level', '!=', AppraisalFormLevel::Level3->value))
                     ->native(false)
                     ->disabledOn('edit')
                     ->required(),

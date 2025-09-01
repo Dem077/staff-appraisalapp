@@ -2,6 +2,7 @@
 
 namespace App\Filament\Staff\Resources;
 
+use App\Enum\AppraisalFormLevel;
 use App\Enum\HODFormassigneeStatus;
 use App\Filament\Staff\Resources\FormsAssignedToHodResource\Pages;
 use App\Filament\Staff\Resources\FormsAssignedToHodResource\RelationManagers;
@@ -72,7 +73,7 @@ class FormsAssignedToHodResource extends Resource implements HasShieldPermission
                     ->default(now())
                     ->required(),
                 Forms\Components\Select::make('appraisal_form_id')
-                    ->relationship('appraisalForm', 'name')
+                    ->relationship('appraisalForm', 'name' , fn (Builder $query) => $query->where('level', AppraisalFormLevel::Level3->value))
                     ->native(false)
                     ->disabledOn('edit')
                     ->required(),

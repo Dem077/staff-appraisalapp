@@ -36,7 +36,7 @@ class ListFormsAssignedToHods extends ListRecords
                 ->form([
                     \Filament\Forms\Components\Select::make('appraisal_form_id')
                         ->label('Appraisal Form')
-                        ->relationship('appraisalForm', 'name')
+                        ->relationship('appraisalForm', 'name' , fn (\Illuminate\Database\Eloquent\Builder $query) => $query->where('level', \App\Enum\AppraisalFormLevel::Level3->value))
                         ->required(),
                     \Filament\Forms\Components\Select::make('staff_id')
                         ->label('For Staff')
