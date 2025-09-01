@@ -10,7 +10,7 @@ use App\Models\FormsAssignedToHod;
 use App\Models\HodFormAssigneeEntry;
 use App\Models\HodFormEntries;
 use App\Models\Staff;
-use App\Services\ShortCuts;
+use App\Services\Shortcuts;
 use Filament\Actions;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Get;
@@ -90,7 +90,7 @@ class ListFormsAssignedToHods extends ListRecords
                                     // cache subordinates per staff for 5 min
                                     $cacheKey = "subs_staff_{$apiId}";
                                     $subs = Cache::remember($cacheKey, 300, function () use ($apiId) {
-                                        $resp = ShortCuts::callgetapi('/users/staffs', ['id' => $apiId])->json();
+                                        $resp = Shortcuts::callgetapi('/users/staffs', ['id' => $apiId])->json();
                                         return is_array($resp) ? $resp : [];
                                     });
 
@@ -135,8 +135,8 @@ class ListFormsAssignedToHods extends ListRecords
                                 'question_id' => $questionId,
                             ]);
                         }
-                        
-                        
+
+
                         $managerids= $data['managers_id'];
                         $coworkerids= $data['co_workers_id'];
                         $subordinateids= $data['subordinates_id'];
@@ -175,7 +175,7 @@ class ListFormsAssignedToHods extends ListRecords
 
                         //FOR COWORKERS
 
-                        
+
                         foreach ($coworkerids as $coworkerid) {
                            $coworker = Staff::where('api_id', $coworkerid)->first();
 
@@ -202,7 +202,7 @@ class ListFormsAssignedToHods extends ListRecords
 
                             }
                         }
-                        
+
 
                         //FOR SUBORDINATES
 
@@ -233,7 +233,7 @@ class ListFormsAssignedToHods extends ListRecords
 
                             }
                         }
-                    
+
                 })
                 ->successNotificationTitle('Bulk assignment and entries created successfully!')
         ];
@@ -242,7 +242,7 @@ class ListFormsAssignedToHods extends ListRecords
     protected function groupedStaffOptions(): array
     {
         return Cache::remember('grouped_staff_options_v1', 300, function () {
-            $all = ShortCuts::callgetapi('/users/active', [])->json();
+            $all = Shortcuts::callgetapi('/users/active', [])->json();
             if (! is_array($all)) {
                 return [];
             }
@@ -257,7 +257,7 @@ class ListFormsAssignedToHods extends ListRecords
                         return 'Unknown Department';
                     }
                     if (! array_key_exists($deptId, $deptNameCache)) {
-                        $resp = ShortCuts::callgetapi('/users/department', ['id' => $deptId])->json();
+                        $resp = Shortcuts::callgetapi('/users/department', ['id' => $deptId])->json();
                         $deptNameCache[$deptId] = (is_array($resp) && isset($resp['name']))
                             ? (string)$resp['name']
                             : 'Unknown Department';

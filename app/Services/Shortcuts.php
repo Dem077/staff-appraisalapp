@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Http;
 use Spatie\Color\Rgb;
 use Filament\Support\Colors\Color;
 
-class ShortCuts
+class Shortcuts
 {
     public static function callgetapi($url ,array $data)
     {

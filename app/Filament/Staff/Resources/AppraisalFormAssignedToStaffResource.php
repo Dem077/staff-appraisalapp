@@ -138,25 +138,26 @@ class AppraisalFormAssignedToStaffResource extends Resource implements HasShield
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->visible(fn($record) => $record->status === AssignedFormStatus::PendingStaff->value && $record->supervisor_id === Auth::user()->id),
+                    ->visible(fn($record) => $record->status === AssignedFormStatus::PendingStaff && $record->supervisor_id === auth('staff')->user()->id),
                 Tables\Actions\Action::make('fill_form')
                     ->label('Fill Form')
                         ->button()
                         ->color('warning')
-                        ->visible(fn($record) => $record->status === AssignedFormStatus::PendingStaff->value && $record->staff_id === Auth::user()->id)
+                        ->visible(fn($record) => $record->status === AssignedFormStatus::PendingStaff && $record->staff_id === auth('staff')->user()->id)
                         ->url(fn($record) => route('appraisal-form-fill', ['record' => $record]))
                         ->openUrlInNewTab(),
                 Tables\Actions\Action::make('supervisor_fill_form')
                     ->label('Fill Form')
                         ->button()
                         ->color('success')
-                        ->visible(fn($record) => $record->status === AssignedFormStatus::PendingSupervisor->value && $record->supervisor_id === Auth::user()->id)
+                        ->visible(fn($record) => $record->status === AssignedFormStatus::PendingSupervisor && $record->supervisor_id ===  auth('staff')->user()->id)
                         ->url(fn($record) => route('supervisor-appraisal-form-fill', ['record' => $record]))
                         ->openUrlInNewTab(),
                 Tables\Actions\Action::make('results')
                     ->label('View Details')
                         ->button()
                         ->color('primary')
+                        ->visible(fn($record) => $record->status === AssignedFormStatus::Complete && $record->supervisor_id ===  auth('staff')->user()->id)
                         ->url(fn($record) => route('filament.staff.resources.appraisal-form-assigned-to-staffs.results', ['record' => $record]))
                         ,
             ])

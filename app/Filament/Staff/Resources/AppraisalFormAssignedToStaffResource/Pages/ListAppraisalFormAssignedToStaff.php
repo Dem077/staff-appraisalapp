@@ -8,7 +8,7 @@ use App\Models\AppraisalFormEntries;
 use App\Models\AppraisalFormKeyBehavior;
 use App\Models\AppraisalFormQuestions;
 use App\Models\Staff;
-use App\Services\ShortCuts;
+use App\Services\Shortcuts;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Facades\Auth;
@@ -35,7 +35,7 @@ class ListAppraisalFormAssignedToStaff extends ListRecords
                         ->multiple()
                         ->options(function () {
                             $authApiId = 4;
-                            $supervisor = ShortCuts::callgetapi('/users/staffs', [
+                            $supervisor = Shortcuts::callgetapi('/users/staffs', [
                                 'id' => $authApiId,
                             ])->json();
 

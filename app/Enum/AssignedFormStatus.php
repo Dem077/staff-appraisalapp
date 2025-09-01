@@ -2,7 +2,7 @@
 
 namespace App\Enum;
 
-use App\Services\ShortCuts;
+use App\Services\Shortcuts;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 enum AssignedFormStatus: string implements HasLabel , HasColor

@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\Staff;
-use App\Services\ShortCuts;
+use App\Services\Shortcuts;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
@@ -34,8 +34,8 @@ Route::get('/appraisal-form-fill/{record}', function ($record) {
         ['label' => '4', 'description' => "Exceeds some requirements, fully met others"],
         ['label' => '5', 'description' => "Exceeds all requirements"],
     ];
-    $department = ShortCuts::callgetapi('/users/department', ['id' => $assigned->staff->api_id,])->json();
-    $supervisor = ShortCuts::callgetapi('/users/supervisor', ['id' => $assigned->staff->api_id,])->json();
+    $department = Shortcuts::callgetapi('/users/department', ['id' => $assigned->staff->api_id,])->json();
+    $supervisor = Shortcuts::callgetapi('/users/supervisor', ['id' => $assigned->staff->api_id,])->json();
     $assigned->staff->department = $department['name'];
     $assigned->staff->supervisor = $supervisor['name'];
 
@@ -163,8 +163,8 @@ Route::get('/supervisor-appraisal-form-fill/{record}', function ($record) {
         ['label' => '4', 'description' => "Exceeds some requirements, fully met others"],
         ['label' => '5', 'description' => "Exceeds all requirements"],
     ];
-    $department = ShortCuts::callgetapi('/users/department', ['id' => $assigned->staff->api_id,])->json();
-    $supervisor = ShortCuts::callgetapi('/users/supervisor', ['id' => $assigned->staff->api_id,])->json();
+    $department = Shortcuts::callgetapi('/users/department', ['id' => $assigned->staff->api_id,])->json();
+    $supervisor = Shortcuts::callgetapi('/users/supervisor', ['id' => $assigned->staff->api_id,])->json();
     $assigned->staff->department = $department['name'];
     $assigned->staff->supervisor = $supervisor['name'];
 
@@ -288,8 +288,8 @@ Route::get('/hod-appraisal-form-fill/{record}', function ($record) {
         ['label' => '4', 'description' => "Exceeds some requirements, fully met others"],
         ['label' => '5', 'description' => "Exceeds all requirements"],
     ];
-    $department = ShortCuts::callgetapi('/users/department', ['id' => $assigned->staff->api_id,])->json();
-    $supervisor = ShortCuts::callgetapi('/users/supervisor', ['id' => $assigned->staff->api_id,])->json();
+    $department = Shortcuts::callgetapi('/users/department', ['id' => $assigned->staff->api_id,])->json();
+    $supervisor = Shortcuts::callgetapi('/users/supervisor', ['id' => $assigned->staff->api_id,])->json();
     $assigned->staff->department = $department['name'];
     $assigned->staff->supervisor = $supervisor['name'];
 
@@ -414,8 +414,8 @@ Route::get('/assignee-hod-appraisal-form-fill/{record}', function ($record) {
         ['label' => '4', 'description' => "Exceeds some requirements, fully met others"],
         ['label' => '5', 'description' => "Exceeds all requirements"],
     ];
-    $department = ShortCuts::callgetapi('/users/department', ['id' => $assigned->staff->api_id,])->json();
-    $supervisor = ShortCuts::callgetapi('/users/supervisor', ['id' => $assigned->staff->api_id,])->json();
+    $department = Shortcuts::callgetapi('/users/department', ['id' => $assigned->staff->api_id,])->json();
+    $supervisor = Shortcuts::callgetapi('/users/supervisor', ['id' => $assigned->staff->api_id,])->json();
     $assigned->staff->department = $department['name'];
     $assigned->staff->supervisor->name = $supervisor['name'];
     $assigned->staff->supervisor->designation = $supervisor['designation'];
@@ -536,7 +536,7 @@ Route::post('/assignee-hod-appraisal-form-fill/{record}', function ($record) {
         'assignee_comment' => $request['supervisorComments'] ?? '',
         'status' => \App\Enum\HODFormassigneeStatus::Completed->value,
     ]);
-    if ($assigned2->hodFormAssignees->every(fn($hodFormAssignees) => $hodFormAssignees->status === \App\Enum\HODFormassigneeStatus::Completed->value)) {
+    if ($assigned2->hodFormAssignees->every(fn($hodFormAssignees) => $hodFormAssignees->status === \App\Enum\HODFormassigneeStatus::Completed)) {
         $assigned2->update([
             'status' => \App\Enum\HODFormassigneeStatus::Completed->value,
         ]);

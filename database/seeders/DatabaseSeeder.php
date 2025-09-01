@@ -26,11 +26,5 @@ class DatabaseSeeder extends Seeder
 
         $user->assignRole('super_admin');
 
-        $staffadmin = \App\Models\Staff::factory()->create([
-            'name' => 'Staff Admin',
-            'email' => 'staffadmin@admin.com',
-        ]);
-
-        $staffadmin->assignRole('staff_admin');
     }
 }

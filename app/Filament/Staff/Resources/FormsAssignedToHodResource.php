@@ -131,13 +131,13 @@ class FormsAssignedToHodResource extends Resource implements HasShieldPermission
                 Tables\Actions\Action::make('fill_hod')
                     ->label('Fill Form')
                     ->color('warning')
-                    ->visible(fn($record) => $record->status === HODFormassigneeStatus::PendingStaff->value && $record->staff_id ===  auth('staff')->user()?->id)
+                    ->visible(fn($record) => $record->status === HODFormassigneeStatus::PendingStaff && $record->staff_id ===  auth('staff')->user()?->id)
                     ->url(fn($record) => route('hod-appraisal-form-fill', ['record' => $record]))
                     ->openUrlInNewTab(),
                 Tables\Actions\Action::make('fill_hod_assignee')
                     ->label('Fill Form')
                     ->color('primary')
-                    ->visible(fn($record) => HodFormassignee::where('assignee_id',auth('staff')->user()->id)->where('forms_assigned_to_hod_id', $record->id)->where('status','pending_staff_appraisal')->first() && $record->status === HODFormassigneeStatus::PendingAssignee->value && $record->hodFormAssignees->contains('assignee_id',  auth('staff')->user()?->id))
+                    ->visible(fn($record) => HodFormassignee::where('assignee_id',auth('staff')->user()->id)->where('forms_assigned_to_hod_id', $record->id)->where('status','pending_staff_appraisal')->first() && $record->status === HODFormassigneeStatus::PendingAssignee && $record->hodFormAssignees->contains('assignee_id',  auth('staff')->user()?->id))
                     ->url(fn($record) => route('assignee-hod-appraisal-form-fill', ['record' => $record]))
                     ->openUrlInNewTab(),
                 Tables\Actions\Action::make('results')
