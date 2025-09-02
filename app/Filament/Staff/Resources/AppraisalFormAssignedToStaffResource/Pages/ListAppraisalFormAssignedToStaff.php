@@ -34,10 +34,8 @@ class ListAppraisalFormAssignedToStaff extends ListRecords
                         ->label('Staff')
                         ->multiple()
                         ->options(function () {
-                            $authApiId = 4;
-                            $supervisor = Shortcuts::callgetapi('/users/staffs', [
-                                'id' => $authApiId,
-                            ])->json();
+
+                            $supervisor = Shortcuts::callgetapi('/users/active',[])->json();
 
                             return $supervisor ? collect($supervisor)->pluck('name', 'id') : collect();
                         })
