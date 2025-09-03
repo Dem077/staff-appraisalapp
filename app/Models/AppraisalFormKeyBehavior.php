@@ -11,6 +11,10 @@ class AppraisalFormKeyBehavior extends Model
         'appraisal_form_category_id',
     ];
 
+    public function getQuestCountAttribute()
+    {
+        return $this->appraisalFormQuestions()->count();
+    }
     public function appraisalFormCategory()
     {
         return $this->belongsTo(AppraisalFormCategory::class, 'appraisal_form_category_id');
@@ -21,4 +25,3 @@ class AppraisalFormKeyBehavior extends Model
         return $this->hasMany(AppraisalFormQuestions::class, 'appraisal_form_key_behavior_id');
     }
 }
- 

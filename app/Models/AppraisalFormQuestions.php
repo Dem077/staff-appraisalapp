@@ -10,7 +10,6 @@ class AppraisalFormQuestions extends Model
         'appraisal_form_key_behavior_id',
         'behavioral_indicators',
     ];
-
     public function appraisalFormKeyBehavior()
     {
         return $this->belongsTo(AppraisalFormKeyBehavior::class, 'appraisal_form_key_behavior_id');
@@ -26,7 +25,7 @@ class AppraisalFormQuestions extends Model
         return $this->hasMany(HodFormAssigneeEntry::class, 'question_id');
     }
 
-    
+
     public function hodFormEntries()
     {
         return $this->hasMany(HodFormEntries::class, 'question_id');

@@ -55,6 +55,17 @@ class AppraisalFormKeyBehaviorResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\Repeater::make('appraisalFormQuestions')
+                    ->label('Behavioral Indicators (Questions)')
+                    ->relationship()
+                    ->columnSpanFull()
+                    ->hiddenOn('edit')
+                    ->simple(
+                        Forms\Components\TextInput::make('behavioral_indicators')
+                            ->required()
+                            ->maxLength(255),
+                    )
+                    ->required(),
             ]);
     }
 
@@ -67,6 +78,8 @@ class AppraisalFormKeyBehaviorResource extends Resource
                 Tables\Columns\TextColumn::make('appraisalFormCategory.name')
                     ->label('Key Behavior Group')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('quest_count')
+                    ->label('Number of Questions'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
