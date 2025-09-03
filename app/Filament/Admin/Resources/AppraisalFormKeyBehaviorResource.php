@@ -75,9 +75,8 @@ class AppraisalFormKeyBehaviorResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('appraisalFormCategory.name')
-                    ->label('Key Behavior Group')
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('appraisalFormCategory.type')
+                    ->badge(),
                 Tables\Columns\TextColumn::make('quest_count')
                     ->label('Number of Questions'),
                 Tables\Columns\TextColumn::make('created_at')
@@ -89,8 +88,27 @@ class AppraisalFormKeyBehaviorResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->groups([
+                Tables\Grouping\Group::make('appraisalFormCategory.name')
+                    ->label(''),
+            ])
+            ->defaultGroup('appraisalFormCategory.name')
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('form_level')
+                    ->label('Form Level')
+                    ->options(
+                        collect(AppraisalFormCategoryType::cases())
+                            ->mapWithKeys(fn($case) => [$case->value => $case->getLabel()])
+                            ->toArray()
+                    )
+                    ->placeholder('All')
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $data['value']
+                            ?  $query->whereHas('appraisalFormCategory', function ($q) use ($data) {
+                                $q->where('type', $data);
+                            })
+                            : $query;
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
