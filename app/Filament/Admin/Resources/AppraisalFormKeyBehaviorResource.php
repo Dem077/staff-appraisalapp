@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources;
 use App\Enum\AppraisalFormCategoryType;
 use App\Filament\Admin\Resources\AppraisalFormKeyBehaviorResource\Pages;
 use App\Filament\Admin\Resources\AppraisalFormKeyBehaviorResource\RelationManagers;
+use App\Models\AppraisalFormCategory;
 use App\Models\AppraisalFormKeyBehavior;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -31,7 +32,10 @@ class AppraisalFormKeyBehaviorResource extends Resource
                 Forms\Components\Select::make('appraisal_form_category_id')
                     ->label('Key Behavior Group')
                     ->relationship('appraisalFormCategory', 'name')
+                    ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->name} ( {$record->type->getLabel()} )")
                     ->required()
+                    ->searchable(['name', 'type'])
+                    ->preload()
                     ->reactive()
                     ->live()
                     ->native(false)
