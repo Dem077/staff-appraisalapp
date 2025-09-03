@@ -2,6 +2,8 @@
 
 namespace App\Filament\Admin\Resources\AppraisalFormResource\RelationManagers;
 
+use App\Enum\AppraisalFormCategoryType;
+use App\Enum\AppraisalFormLevel;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -37,9 +39,28 @@ class AppraisalFormCategoriesRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\AttachAction::make()
-                ->preloadRecordSelect()
-                ->multiple()
-                ->modelLabel('Key Behavior Group'),
+                    ->preloadRecordSelect()
+                    ->multiple()
+                    ->modelLabel('Key Behavior Group')
+                    ->recordSelectOptionsQuery(function (Builder $query) {
+
+                        $formlevel = $this->getOwnerRecord()->level;
+                        if( $formlevel == AppraisalFormLevel::Level1->value){
+                            $type = AppraisalFormCategoryType::FormLevel1->value;
+                        }elseif ($formlevel == AppraisalFormLevel::Level2->value){
+                            $type = AppraisalFormCategoryType::FormLevel2->value;
+                        }elseif ($formlevel == AppraisalFormLevel::Level3->value){
+                            $type = AppraisalFormCategoryType::FormLevel3->value;
+                        }else{
+                            $type = "";
+                        }
+                        return $query->where('appraisal_form_categories.type', $type)
+                            ->select([
+                                'appraisal_form_categories.id',
+                                'appraisal_form_categories.name',
+                                'appraisal_form_categories.type',
+                            ]);
+                    }),
             ])
             ->actions([
                 Tables\Actions\DetachAction::make(),

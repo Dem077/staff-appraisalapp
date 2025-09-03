@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources;
 
+use App\Enum\AppraisalFormCategoryType;
 use App\Filament\Admin\Resources\AppraisalFormKeyBehaviorResource\Pages;
 use App\Filament\Admin\Resources\AppraisalFormKeyBehaviorResource\RelationManagers;
 use App\Models\AppraisalFormKeyBehavior;
@@ -37,7 +38,20 @@ class AppraisalFormKeyBehaviorResource extends Resource
                     ->createOptionForm([
                         Forms\Components\TextInput::make('name')
                             ->required(),
-                    ]),
+                        Forms\Components\Select::make('type')
+                            ->label('For Form Level')
+                            ->native(false)
+                            ->options(AppraisalFormCategoryType::class)
+                    ])
+                    ->editOptionForm([
+                        Forms\Components\TextInput::make('name')
+                            ->required(),
+                        Forms\Components\Select::make('type')
+                            ->label('For Form Level')
+                            ->native(false)
+                            ->options(AppraisalFormCategoryType::class)
+                    ])
+                ,
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),

@@ -2,13 +2,22 @@
 
 namespace App\Models;
 
+use App\Enum\AppraisalFormCategoryType;
+use App\Enum\HODFormassigneeType;
 use Illuminate\Database\Eloquent\Model;
 
 class AppraisalFormCategory extends Model
 {
     protected $fillable = [
         'name',
+        'type',
     ];
+    protected function casts(): array
+    {
+        return [
+            'type' => AppraisalFormCategoryType::class,
+        ];
+    }
 
     public function appraisalFormKeyBehaviors()
     {
@@ -24,5 +33,5 @@ class AppraisalFormCategory extends Model
             'appraisal_form_id'
         );
     }
- 
+
 }

@@ -22,7 +22,7 @@
     <div class="w-full max-w-4xl bg-white shadow-2xl rounded-3xl p-2 md:p-10 fade-in">
         <img src="{{ asset('images/agrologo.png') }}" alt="Logo" class="mx-auto h-20 md:h-28 mb-2 md:mb-6" />
         <h1 class="text-2xl md:text-4xl font-extrabold text-center text-green-700 mb-2 leading-tight">Employee Performance Appraisal</h1>
-        <p class="text-center text-gray-500 text-base md:text-lg mb-6 md:mb-10 font-medium">Probationary Period Evaluation</p>
+{{--        <p class="text-center text-gray-500 text-base md:text-lg mb-6 md:mb-10 font-medium">Probationary Period Evaluation</p>--}}
 
         <form method="POST" action="{{ route('supervisor-appraisal-form-fill.submit', $assigned->id) }}" class="space-y-6 md:space-y-8">
             @csrf
