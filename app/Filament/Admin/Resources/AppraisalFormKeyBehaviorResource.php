@@ -37,6 +37,7 @@ class AppraisalFormKeyBehaviorResource extends Resource
                     ->searchable(['name', 'type'])
                     ->preload()
                     ->reactive()
+                    ->default(fn () => \App\Models\AppraisalFormCategory::latest('created_at')->value('id'))
                     ->live()
                     ->native(false)
                     ->createOptionForm([
