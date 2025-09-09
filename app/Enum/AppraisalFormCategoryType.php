@@ -30,6 +30,7 @@ enum AppraisalFormCategoryType: string implements HasLabel, HasColor
             self::FormLevel1 => 'primary',
             self::FormLevel2 => 'warning',
             self::FormLevel3 => 'success',
+            self:: FormProbationary => 'gray',
         };
     }
 }
