@@ -14,6 +14,9 @@ class FormsAssignedToHod extends Model
         'hod_id',
         'status',
         'hod_comment',
+        'supervisor_comment',
+        'hr_comment',
+        'supervisor_id',
     ];
 
     protected function casts(): array
@@ -30,6 +33,11 @@ class FormsAssignedToHod extends Model
     public function staff()
     {
         return $this->belongsTo(Staff::class, 'hod_id');
+    }
+
+    public function supervisor()
+    {
+        return $this->belongsTo(Staff::class, 'supervisor_id');
     }
 
     public function hodFormAssignees()

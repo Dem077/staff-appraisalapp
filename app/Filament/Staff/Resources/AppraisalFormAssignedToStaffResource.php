@@ -158,10 +158,11 @@ class AppraisalFormAssignedToStaffResource extends Resource implements HasShield
                     ->label('View Details')
                         ->button()
                         ->color('primary')
-                        ->visible(fn($record) => $record->status === AssignedFormStatus::Complete && $record->supervisor_id ===  auth('staff')->user()->id)
+                        ->visible(fn($record) => $record->status === AssignedFormStatus::HRComment && $record->supervisor_id ===  auth('staff')->user()->id)
                         ->url(fn($record) => route('filament.staff.resources.appraisal-form-assigned-to-staffs.results', ['record' => $record]))
                         ,
             ])
+            ->recordUrl(false)
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),

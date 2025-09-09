@@ -270,7 +270,7 @@ Route::post('/supervisor-appraisal-form-fill/{record}', function ($record) {
 
     $assigned->update([
         'supervisor_comment' => $request['supervisorComments'] ?? '',
-        'status' => \App\Enum\AssignedFormStatus::Complete->value,
+        'status' => \App\Enum\AssignedFormStatus::HRComment->value,
     ]);
 
     return redirect()->route('filament.staff.resources.appraisal-form-assigned-to-staffs.index')
@@ -534,11 +534,11 @@ Route::post('/assignee-hod-appraisal-form-fill/{record}', function ($record) {
 
     $assigneeform->update([
         'assignee_comment' => $request['supervisorComments'] ?? '',
-        'status' => \App\Enum\HODFormassigneeStatus::Completed->value,
+        'status' => \App\Enum\HODFormassigneeStatus::HRComment->value,
     ]);
-    if ($assigned2->hodFormAssignees->every(fn($hodFormAssignees) => $hodFormAssignees->status === \App\Enum\HODFormassigneeStatus::Completed)) {
+    if ($assigned2->hodFormAssignees->every(fn($hodFormAssignees) => $hodFormAssignees->status === \App\Enum\HODFormassigneeStatus::HRComment)) {
         $assigned2->update([
-            'status' => \App\Enum\HODFormassigneeStatus::Completed->value,
+            'status' => \App\Enum\HODFormassigneeStatus::HRComment->value,
         ]);
     }
 

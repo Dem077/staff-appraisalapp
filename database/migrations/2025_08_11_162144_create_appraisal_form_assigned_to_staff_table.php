@@ -25,7 +25,8 @@ return new class extends Migration
                 ->onDelete('cascade');
             $table->text('supervisor_comment')->nullable();
             $table->text('staff_comment')->nullable();
-            $table->enum('status', ['pending_staff_appraisal', 'pending_supervisor_appraisal', 'complete'])->default('pending_staff_appraisal');
+            $table->text('hr_comment')->nullable();
+            $table->enum('status', ['pending_staff_appraisal', 'pending_supervisor_appraisal','hr_comment', 'complete'])->default('pending_staff_appraisal');
             $table->timestamps();
         });
     }

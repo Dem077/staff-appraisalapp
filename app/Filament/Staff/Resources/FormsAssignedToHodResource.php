@@ -81,25 +81,16 @@ class FormsAssignedToHodResource extends Resource implements HasShieldPermission
                     ->relationship('staff', 'name')
                     ->required()
                     ->searchable(['name', 'emp_no'])
-                    ->afterStateUpdated(function (Forms\Set $set, $state) {
-                        if ($state) {
-                            $user = Staff::where('id', $state)->pluck('api_id')->first();
-                            $supervisor = Http::withHeaders([
-                                'X-API-KEY' => config('app.appkey'),
-                                'Accept' => 'application/json',
-                            ])->get(config('app.apiurl') . '/users/supervisor', [
-                                    'id' => $user,
-                                ]);
-
-                            $userid = Staff::where('api_id',  $supervisor->json()['id'])->pluck('id')->first();
-                                $set('supervisor_id', $userid);
-                        }
-                    })
                     ->native(false)
                     ->preload()
                     ->reactive()
                     ->live()
                     ->getOptionLabelFromRecordUsing(fn (Model $record) => "{$record->name} ({$record->emp_no})"),
+                Forms\Components\Select::make('supervisor_id')
+                    ->relationship('supervisor', 'name')
+                    ->required()
+                    ->reactive()
+                    ->live(),
             ]);
     }
 
@@ -118,6 +109,10 @@ class FormsAssignedToHodResource extends Resource implements HasShieldPermission
                     ->label('HOD Name')
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('supervisor.name')
+                    ->label('Supervisor Name')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
                     ->badge()
@@ -132,7 +127,7 @@ class FormsAssignedToHodResource extends Resource implements HasShieldPermission
                 Tables\Actions\Action::make('fill_hod')
                     ->label('Fill Form')
                     ->color('warning')
-                    ->visible(fn($record) => $record->status === HODFormassigneeStatus::PendingStaff && $record->staff_id ===  auth('staff')->user()?->id)
+                    ->visible(fn($record) => $record->status === HODFormassigneeStatus::PendingStaff && $record->hod_id ===  auth('staff')->user()?->id)
                     ->url(fn($record) => route('hod-appraisal-form-fill', ['record' => $record]))
                     ->openUrlInNewTab(),
                 Tables\Actions\Action::make('fill_hod_assignee')

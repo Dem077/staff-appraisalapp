@@ -9,6 +9,7 @@ enum AssignedFormStatus: string implements HasLabel , HasColor
 {
     case PendingStaff = 'pending_staff_appraisal';
     case PendingSupervisor = 'pending_supervisor_appraisal';
+    case HRComment = 'hr_comment';
     case Complete = 'complete';
 
     public function getLabel(): ?string
@@ -18,6 +19,7 @@ enum AssignedFormStatus: string implements HasLabel , HasColor
          return match ($this) {
             self::PendingStaff => 'Pending Staff Appraisal',
             self::PendingSupervisor => 'Pending Supervisor Appraisal',
+             self::HRComment => 'HR Comment',
             self::Complete => 'Complete',
         };
     }
@@ -26,6 +28,7 @@ enum AssignedFormStatus: string implements HasLabel , HasColor
         return match ($this) {
             self::PendingStaff => 'gray',
             self::PendingSupervisor => 'warning',
+            self::HRComment => 'primary',
             self::Complete => 'success',
         };
     }

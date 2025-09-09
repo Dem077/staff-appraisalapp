@@ -2,15 +2,19 @@
 
 namespace App\Filament\Staff\Resources\FormsAssignedToHodResource\Pages;
 
+use App\Enum\AssignedFormStatus;
+use App\Enum\HODFormassigneeStatus;
 use App\Enum\HODFormassigneeType;
 use App\Filament\Staff\Resources\FormsAssignedToHodResource;
 use App\Models\FormsAssignedToHod;
 use App\Models\HodFormAssigneeEntry;
 use App\Models\HodFormEntries;
+use App\Services\Shortcuts;
 use Filament\Forms\Components\Textarea;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
 use Filament\Resources\Concerns\HasTabs;
 use Filament\Resources\Pages\Page;
 use Filament\Tables\Actions\Action;
@@ -76,6 +80,56 @@ class ViewResults extends Page implements HasTable
                         TextEntry::make('hod_comment')
                             ->label('Staff Comment')
                             ->icon('heroicon-o-chat-bubble-left-right'),
+                        TextEntry::make('supervisor_comment')
+                            ->label('Supervisor Comment')
+                            ->icon('heroicon-o-chat-bubble-left-right'),
+                        TextEntry::make('hr_comment')
+                            ->label('HR Comment')
+                            ->icon('heroicon-o-chat-bubble-left-right'),
+                    ])
+                    ->headerActions([
+                        \Filament\Infolists\Components\Actions\Action::make('add_supervisor_comment')
+                            ->label('Add Supervisor Comment')
+                            ->icon('heroicon-o-plus')
+                            ->visible(fn ($record) => ($record->status === HODFormassigneeStatus::PendingAssignee || $record->status === HODFormassigneeStatus::HRComment) && $record->supervisor_id === auth('staff')->user()->id)
+                            ->form([
+                                Textarea::make('supervisor_comment'),
+                            ])
+                            ->action(function ($record , $data){
+
+                                if($data['supervisor_comment']){
+                                    $record->update([
+                                        'supervisor_comment'=> $data['supervisor_comment'],
+                                        'status' => HODFormassigneeStatus::Completed,
+                                    ]);
+                                    Notification::make('comment_added')
+                                        ->body('Comment added Successfully')
+                                        ->icon('heroicon-o-check')
+                                        ->color('success');
+                                }
+
+                            }),
+                        \Filament\Infolists\Components\Actions\Action::make('add_hr_comment')
+                            ->label('Add HR Comment')
+                            ->icon('heroicon-o-plus')
+                            ->visible(fn ($record) => $record->status === HODFormassigneeStatus::HRComment && in_array('HR', Shortcuts::callgetapi('/user/roles', ['id' => auth('staff')->user()->id])->json() ?? []))
+                            ->form([
+                                Textarea::make('hr_comment'),
+                            ])
+                            ->action(function ($record , $data){
+
+                                if($data['hr_comment']){
+                                    $record->update([
+                                        'hr_comment'=> $data['hr_comment'],
+                                        'status' => HODFormassigneeStatus::Completed->value,
+                                    ]);
+                                    Notification::make('comment_added')
+                                        ->body('Comment added Successfully')
+                                        ->icon('heroicon-o-check')
+                                        ->color('success');
+                                }
+
+                            }),
                     ]),
             ]);
     }

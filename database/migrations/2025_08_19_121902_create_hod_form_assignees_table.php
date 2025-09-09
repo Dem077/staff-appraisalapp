@@ -24,8 +24,8 @@ return new class extends Migration
                 ->constrained('forms_assigned_to_hods')
                 ->onDelete('cascade')
                 ->comment('Foreign key referencing the forms assigned to HOD');
-            
-            $table->enum('status', ['pending_staff_appraisal', 'complete'])->default('pending_staff_appraisal');
+
+            $table->enum('status', ['pending_staff_appraisal','hr_comment', 'complete'])->default('pending_staff_appraisal');
             $table->timestamps();
         });
     }

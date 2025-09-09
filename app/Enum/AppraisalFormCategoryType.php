@@ -9,6 +9,7 @@ enum AppraisalFormCategoryType: string implements HasLabel, HasColor
     case FormLevel1 = 'form_level_1';
     case FormLevel2 = 'form_level_2';
     case FormLevel3 = 'form_level_3';
+    case FormProbationary = 'form_probationary';
 
     public function getLabel(): ?string
     {
@@ -18,6 +19,7 @@ enum AppraisalFormCategoryType: string implements HasLabel, HasColor
             self::FormLevel1 => 'Form Level 1',
             self::FormLevel2 => 'Form Level 2',
             self::FormLevel3 => 'Form Level 3',
+            self:: FormProbationary => 'Probationary Form',
 
         };
     }
@@ -26,7 +28,7 @@ enum AppraisalFormCategoryType: string implements HasLabel, HasColor
     {
         return match ($this) {
             self::FormLevel1 => 'primary',
-            self::FormLevel2 => 'secondary',
+            self::FormLevel2 => 'warning',
             self::FormLevel3 => 'success',
         };
     }

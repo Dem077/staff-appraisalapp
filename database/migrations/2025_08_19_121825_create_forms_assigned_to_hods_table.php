@@ -23,7 +23,9 @@ return new class extends Migration
                 ->onDelete('cascade')
                 ->comment('Foreign key referencing the head of department');
             $table->string('hod_comment')->nullable();
-            $table->enum('status', ['pending_staff_appraisal', 'pending_assignee_appraisal', 'complete'])->default('pending_staff_appraisal');
+            $table->string('hr_comment')->nullable();
+            $table->string('supervisor_comment')->nullable();
+            $table->enum('status', ['pending_staff_appraisal', 'pending_assignee_appraisal','hr_comment', 'complete'])->default('pending_staff_appraisal');
             $table->timestamps();
         });
     }

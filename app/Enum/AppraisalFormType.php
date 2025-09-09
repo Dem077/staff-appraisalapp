@@ -7,6 +7,7 @@ enum AppraisalFormType: string implements HasLabel
 {
     case MidYear = 'mid-year';
     case YearEnd = 'year-end';
+    case Probationary = 'probationary';
 
     public function getLabel(): ?string
     {
@@ -15,6 +16,7 @@ enum AppraisalFormType: string implements HasLabel
          return match ($this) {
             self::MidYear => 'Mid Year',
             self::YearEnd => 'Year End',
+             self::Probationary => 'Probationary',
         };
     }
 }

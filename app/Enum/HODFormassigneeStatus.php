@@ -8,6 +8,7 @@ enum HODFormassigneeStatus: string implements HasLabel , HasColor
 {
     case PendingStaff = 'pending_staff_appraisal';
     case PendingAssignee = 'pending_assignee_appraisal';
+    case HRComment = 'hr_comment';
     case Completed = 'complete';
 
     public function getLabel(): ?string
@@ -17,6 +18,7 @@ enum HODFormassigneeStatus: string implements HasLabel , HasColor
          return match ($this) {
             self::PendingStaff => 'Pending Staff',
             self::PendingAssignee => 'Pending Assignee',
+             self::HRComment => 'HR Comment',
             self::Completed => 'Completed',
         };
     }
@@ -26,6 +28,7 @@ enum HODFormassigneeStatus: string implements HasLabel , HasColor
         return match ($this) {
             self::PendingStaff => 'gray',
             self::PendingAssignee => 'warning',
+            self::HRComment => 'primary',
             self::Completed => 'success',
         };
     }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('appraisal_forms', function (Blueprint $table) {
             $table->boolean('is_active')->default(true)->after('name')->comment('Indicates if the appraisal form is active');
-            $table->enum('level', ['level_1', 'level_2', 'level_3'])->default('level_1')->after('is_active')->comment('Indicates the level of the appraisal form');
+            $table->enum('level', ['level_1', 'level_2', 'level_3' ,'probationary'])->default('level_1')->after('is_active')->comment('Indicates the level of the appraisal form');
         });
     }
 

@@ -37,7 +37,8 @@ class ListFormsAssignedToHods extends ListRecords
                     \Filament\Forms\Components\Select::make('appraisal_form_id')
                         ->label('Appraisal Form')
                         ->relationship('appraisalForm', 'name' , fn (\Illuminate\Database\Eloquent\Builder $query) => $query->where('level', \App\Enum\AppraisalFormLevel::Level3->value))
-                        ->required(),
+                        ->required()
+                        ->native(false),
                     \Filament\Forms\Components\Select::make('staff_id')
                         ->label('For Staff')
                         ->options(fn () => $this->groupedStaffOptions())
@@ -54,6 +55,15 @@ class ListFormsAssignedToHods extends ListRecords
                         ->live()
                         ->reactive()
                         ->required(),
+                    \Filament\Forms\Components\Select::make('supervisor_id')
+                        ->relationship('supervisor', 'name')
+                        ->options(fn () => $this->groupedStaffOptions())
+                        ->searchable()
+                        ->preload()
+                        ->native(false)
+                        ->required()
+                        ->reactive()
+                        ->live(),
                     Section::make('Asignees')
                     ->description('Select 3 from each type')
                         ->schema([
@@ -63,7 +73,6 @@ class ListFormsAssignedToHods extends ListRecords
                                 ->options(fn () => $this->groupedStaffOptions())
                                 ->preload()
                                 ->maxItems(3)
-                                ->minItems(3)
                                 ->searchable()
                                 ->required(),
                             \Filament\Forms\Components\Select::make('co_workers_id')
@@ -72,7 +81,6 @@ class ListFormsAssignedToHods extends ListRecords
                                 ->options(fn () => $this->groupedStaffOptions())
                                 ->preload()
                                 ->maxItems(3)
-                                ->minItems(3)
                                 ->searchable()
                                 ->required(),
                             \Filament\Forms\Components\Select::make('subordinates_id')
@@ -117,6 +125,7 @@ class ListFormsAssignedToHods extends ListRecords
                                 'assigned_date' => now(),
                                 'appraisal_form_id' => $data['appraisal_form_id'],
                                 'hod_id' => $staff->id,
+                                'supervisor_id' => $data['supervisor_id'],
                             ]);
 
                         // Get all questions for the selected form
@@ -241,7 +250,7 @@ class ListFormsAssignedToHods extends ListRecords
 
     protected function groupedStaffOptions(): array
     {
-        return Cache::remember('grouped_staff_options_v1', 300, function () {
+        return Cache::remember('grouped_staff_options_v1', 60, function () {
             $all = Shortcuts::callgetapi('/users/active', [])->json();
             if (! is_array($all)) {
                 return [];
@@ -257,7 +266,7 @@ class ListFormsAssignedToHods extends ListRecords
                         return 'Unknown Department';
                     }
                     if (! array_key_exists($deptId, $deptNameCache)) {
-                        $resp = Shortcuts::callgetapi('/users/department', ['id' => $deptId])->json();
+                        $resp = Shortcuts::callgetapi('/department', ['dep_id' => $deptId])->json();
                         $deptNameCache[$deptId] = (is_array($resp) && isset($resp['name']))
                             ? (string)$resp['name']
                             : 'Unknown Department';
@@ -268,11 +277,12 @@ class ListFormsAssignedToHods extends ListRecords
                     return collect($group)
                         ->filter(fn ($u) => isset($u['name']) && $u['name'] !== '')
                         ->mapWithKeys(function ($u) {
+                            $actualid = Staff::where('api_id', $u['id'])->pluck('id')->first();
                             $label = (string)$u['name'];
                             if (! empty($u['emp_no'])) {
                                 $label .= ' (' . $u['emp_no'] . ')';
                             }
-                            return [$u['id'] => $label];
+                            return [$actualid => $label];
                         })
                         ->toArray();
                 })

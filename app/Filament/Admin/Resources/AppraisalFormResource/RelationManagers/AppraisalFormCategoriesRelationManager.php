@@ -51,6 +51,8 @@ class AppraisalFormCategoriesRelationManager extends RelationManager
                             $type = AppraisalFormCategoryType::FormLevel2->value;
                         }elseif ($formlevel == AppraisalFormLevel::Level3->value){
                             $type = AppraisalFormCategoryType::FormLevel3->value;
+                        }elseif ($formlevel == AppraisalFormLevel::Probationary->value){
+                            $type = AppraisalFormCategoryType::FormProbationary->value;
                         }else{
                             $type = "";
                         }

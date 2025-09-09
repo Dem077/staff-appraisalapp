@@ -16,6 +16,7 @@ class AppraisalFormAssignedToStaff extends Model
        'staff_comment',
        'appraisal_type',
        'status',
+       'hr_comment',
    ];
 
     protected function casts(): array

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('appraisal_form_categories', function (Blueprint $table) {
-            $table->enum('type', ['form_level_1', 'form_level_2','form_level_3'])->default('form_level_1')->after('name')->comment('Category type to distinguish between different appraisal forms');
+            $table->enum('type', ['form_level_1', 'form_level_2','form_level_3' , 'form_probationary'])->default('form_level_1')->after('name')->comment('Category type to distinguish between different appraisal forms');
         });
     }
 

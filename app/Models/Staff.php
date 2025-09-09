@@ -76,6 +76,11 @@ class Staff extends Authenticatable implements FilamentUser, HasAvatar
         return $this->hasMany(AppraisalFormAssignedToStaff::class, 'supervisor_id');
     }
 
+    public function supervisorhod()
+    {
+        return $this->hasMany(FormsAssignedToHod::class, 'supervisor_id');
+    }
+
     public function formsAssignedToHod()
     {
         return $this->hasMany(FormsAssignedToHod::class, 'hod_id');

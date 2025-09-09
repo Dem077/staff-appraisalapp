@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name')->comment('Name of the appraisal form');
             $table->text('description')->comment('Description of the appraisal form');
-            $table->enum('type', ['mid-year', 'year-end'])->default('mid-year');
+            $table->enum('type', ['mid-year', 'year-end' , 'probationary'])->default('mid-year');
             $table->timestamps();
         });
     }

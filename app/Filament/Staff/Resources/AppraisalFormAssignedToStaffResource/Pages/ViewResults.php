@@ -2,14 +2,18 @@
 
 namespace App\Filament\Staff\Resources\AppraisalFormAssignedToStaffResource\Pages;
 
+use App\Enum\AssignedFormStatus;
 use App\Filament\Staff\Resources\AppraisalFormAssignedToStaffResource;
 use App\Models\AppraisalFormAssignedToStaff;
 use App\Models\AppraisalFormEntries;
+use App\Services\Shortcuts;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Infolists\Components\Actions;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\Summarizers\Count;
 use Filament\Tables\Columns\Summarizers\Summarizer;
@@ -81,6 +85,31 @@ class ViewResults extends Page implements HasTable
                         TextEntry::make('supervisor_comment')
                             ->label("Supervisor's Comment")
                             ->icon('heroicon-o-chat-bubble-left-right'),
+                        TextEntry::make('hr_comment')
+                            ->label("HR Comment")
+                            ->icon('heroicon-o-chat-bubble-left-right'),
+                    ])->headerActions([
+                        Actions\Action::make('add_hr_comment')
+                        ->label('Add HR Comment')
+                        ->icon('heroicon-o-plus')
+                            ->visible(fn ($record) => $record->status === AssignedFormStatus::HRComment && in_array('HR', Shortcuts::callgetapi('/user/roles', ['id' => auth('staff')->user()->id])->json() ?? []))
+                        ->form([
+                            Textarea::make('hr_comment'),
+                        ])
+                        ->action(function ($record , $data){
+
+                            if($data['hr_comment']){
+                                $record->update([
+                                    'hr_comment'=> $data['hr_comment'],
+                                    'status' => AssignedFormStatus::Complete->value,
+                                ]);
+                                Notification::make('comment_added')
+                                    ->body('Comment added Successfully')
+                                    ->icon('heroicon-o-check')
+                                    ->color('success');
+                            }
+
+                        }),
                     ]),
             ]);
     }

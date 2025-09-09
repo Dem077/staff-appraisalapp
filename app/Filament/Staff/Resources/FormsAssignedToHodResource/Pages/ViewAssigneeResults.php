@@ -2,16 +2,20 @@
 
 namespace App\Filament\Staff\Resources\FormsAssignedToHodResource\Pages;
 
+use App\Enum\HODFormassigneeStatus;
 use App\Enum\HODFormassigneeType;
 use App\Filament\Staff\Resources\FormsAssignedToHodResource;
 use App\Models\FormsAssignedToHod;
 use App\Models\HodFormassignee;
 use App\Models\HodFormAssigneeEntry;
 use App\Models\HodFormEntries;
+use App\Services\Shortcuts;
 use Filament\Forms\Components\Textarea;
+use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Concerns\HasTabs;
 use Filament\Resources\Pages\Page;
@@ -70,6 +74,53 @@ class ViewAssigneeResults extends Page implements HasTable
                             ->label('Type')
 //                            ->badge()
                             ->listWithLineBreaks(),
+                    ]),
+                Section::make('Comments')
+                    ->columns([
+                        'md' => 1,
+                        'lg' => 1,
+                        'sm' => 1,
+                    ])
+                    ->collapsed()
+                    ->schema([
+                        RepeatableEntry::make('hodFormAssignees')
+                            ->label('Assignee Comments')
+                            ->schema([
+                                TextEntry::make('staff.name')
+                                    ->label('Name')
+                                    ->icon('heroicon-o-user'),
+                                TextEntry::make('assignee_comment')
+                                    ->label('Assignee Comment')
+                                    ->visible(fn ($record) => $record->assignee_comment)
+                                    ->icon('heroicon-o-chat-bubble-left-right'),
+                                TextEntry::make('hr_comment')
+                                    ->label('HR Comment')
+//                                    ->visible(fn ($record) => $record->hr_comment)
+                                    ->icon('heroicon-o-chat-bubble-left-right')
+                                    ->hintAction(
+                                        \Filament\Infolists\Components\Actions\Action::make('add_hr_comment')
+                                        ->label('Add Comment')
+                                        ->icon('heroicon-o-plus')
+                                        ->visible(fn ($record) => $record->status === HODFormassigneeStatus::HRComment && in_array('HR', Shortcuts::callgetapi('/user/roles', ['id' => auth('staff')->user()->id])->json() ?? []))
+                                        ->form([
+                                            Textarea::make('hr_comment'),
+                                        ])
+                                        ->action(function ($record , $data){
+
+                                            if($data['hr_comment']){
+                                                $record->update([
+                                                    'hr_comment'=> $data['hr_comment'],
+                                                    'status' => HODFormassigneeStatus::Completed->value,
+                                                ]);
+                                                Notification::make('comment_added')
+                                                    ->body('Comment added Successfully')
+                                                    ->icon('heroicon-o-check')
+                                                    ->color('success');
+                                            }
+
+                                        }),),
+                            ])
+                            ->grid(3),
                     ]),
             ]);
     }
