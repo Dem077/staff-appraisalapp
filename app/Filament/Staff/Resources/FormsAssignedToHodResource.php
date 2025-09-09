@@ -139,6 +139,7 @@ class FormsAssignedToHodResource extends Resource implements HasShieldPermission
                 Tables\Actions\Action::make('results')
                     ->label('View Details')
                     ->button()
+                    ->visible(fn ($record) => ($record->status === HODFormassigneeStatus::Completed || $record->status === HODFormassigneeStatus::PendingAssignee || $record->status === HODFormassigneeStatus::HRComment) && $record->hod_id ===  auth('staff')->user()?->id &&  $record->supervisor_id ===  auth('staff')->user()?->id)
                     ->color('primary')
                     ->url(fn($record) => route('filament.staff.resources.forms-assigned-to-hods.results', ['record' => $record]))
                     ,

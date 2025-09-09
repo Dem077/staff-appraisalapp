@@ -87,39 +87,16 @@ class ListFormsAssignedToHods extends ListRecords
                                 ->label('Subordinates')
                                 ->multiple()
                                 ->live()
+                                ->options(fn () => $this->groupedStaffOptions())
                                 ->maxItems(3)
                                 ->reactive()
-                                ->options(function (Get $get) {
-                                    $selected = $get('selected_staff');
-                                    $apiId = (int)(is_array($selected) ? reset($selected) : $selected);
-                                    if ($apiId <= 0) {
-                                        return [];
-                                    }
-                                    // cache subordinates per staff for 5 min
-                                    $cacheKey = "subs_staff_{$apiId}";
-                                    $subs = Cache::remember($cacheKey, 300, function () use ($apiId) {
-                                        $resp = Shortcuts::callgetapi('/users/staffs', ['id' => $apiId])->json();
-                                        return is_array($resp) ? $resp : [];
-                                    });
-
-                                    return collect($subs)
-                                        ->filter(fn ($u) => is_array($u) && isset($u['id']))
-                                        ->mapWithKeys(function ($u) {
-                                            $label = $u['name'] ?? ('ID '.$u['id']);
-                                            if (! empty($u['emp_no'])) {
-                                                $label .= ' (' . $u['emp_no'] . ')';
-                                            }
-                                            return [$u['id'] => (string)$label];
-                                        })
-                                        ->toArray();
-                                })
                                 ->searchable()
                                 ->required(),
                         ])
                 ])
                 ->action(function (array $data) {
 
-                        $staff = Staff::where('api_id', $data['staff_id'])->first();
+                        $staff = Staff::where('id', $data['staff_id'])->first();
 
                         $assignedhodform = FormsAssignedToHod::create([
                                 'assigned_date' => now(),
@@ -155,7 +132,7 @@ class ListFormsAssignedToHods extends ListRecords
 
 
                         foreach ($managerids as $managerId) {
-                           $manager = Staff::where('api_id', $managerId)->first();
+                           $manager = Staff::where('id', $managerId)->first();
 
                            $hodassigned = $assignedhodform->hodFormAssignees()->create([
                                 'assignee_id' => $manager->id,
@@ -186,7 +163,7 @@ class ListFormsAssignedToHods extends ListRecords
 
 
                         foreach ($coworkerids as $coworkerid) {
-                           $coworker = Staff::where('api_id', $coworkerid)->first();
+                           $coworker = Staff::where('id', $coworkerid)->first();
 
                            $hodassigned = $assignedhodform->hodFormAssignees()->create([
                                 'assignee_id' => $coworker->id,
@@ -217,7 +194,7 @@ class ListFormsAssignedToHods extends ListRecords
 
 
                         foreach ($subordinateids as $subordinateid) {
-                           $subordinate = Staff::where('api_id', $subordinateid)->first();
+                           $subordinate = Staff::where('id', $subordinateid)->first();
 
                            $hodassigned = $assignedhodform->hodFormAssignees()->create([
                                 'assignee_id' => $subordinate->id,

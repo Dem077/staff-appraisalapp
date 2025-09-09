@@ -370,6 +370,7 @@ class ViewResults extends Page implements HasTable
             ])
             ->headerActions([
                 Action::make('view_assignee_details')
+                    ->visible(fn ($record) => $this->record->hod_id !== auth('staff')->user()->id)
                     ->url(fn () => route('filament.staff.resources.forms-assigned-to-hods.assignee-results', ['record' => $this->record->id]))
                     ->label('View Assignees Results')
                     ->icon('heroicon-o-users'),
