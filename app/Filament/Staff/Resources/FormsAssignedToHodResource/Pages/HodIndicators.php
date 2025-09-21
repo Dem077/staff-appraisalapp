@@ -43,7 +43,7 @@ class HodIndicators extends Page implements Tables\Contracts\HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query($this->getTableQuery()) 
+            ->query($this->getTableQuery())
             ->columns([
                 Tables\Columns\TextColumn::make('id'),
                 Tables\Columns\TextColumn::make('question.appraisalFormKeyBehavior.name')
@@ -51,6 +51,10 @@ class HodIndicators extends Page implements Tables\Contracts\HasTable
                 Tables\Columns\TextColumn::make('question.behavioral_indicators')
                     ->label('Behavioral Indicators')
                     ->wrap(),
+                Tables\Columns\TextColumn::make('question.dhivehi_behavioral_indicators')
+                    ->label('Behavioral indicators (ދިވެހި)')
+                    ->wrap()
+                    ->extraAttributes(['style' => 'direction: rtl; font-family: Faruma ']),
                 Tables\Columns\ToggleColumn::make('hidden')
                     ->label('Is Not Applicable'),
             ])

@@ -38,6 +38,10 @@ class HodFormEntriesRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('question.behavioral_indicators')
                     ->label('Behavioral Indicators')
                     ->wrap(),
+                Tables\Columns\TextColumn::make('question.dhivehi_behavioral_indicators')
+                    ->label('Behavioral indicators (ދިވެހި)')
+                    ->wrap()
+                    ->extraAttributes(['style' => 'direction: rtl; font-family: Faruma ']),
                 Tables\Columns\ToggleColumn::make('hidden')
                     ->label('Is Not Applicable'),
             ])
@@ -87,7 +91,7 @@ class HodFormEntriesRelationManager extends RelationManager
                     Tables\Actions\BulkAction::make('hide_all')
                     ->label('Mark/Unmark (N/A) ')
                     ->action(function (Collection $records) {
-                        
+
                         foreach ($records as $record) {
                             if ($record->hidden) {
                                 $record->update(['hidden' => false]);
@@ -95,7 +99,7 @@ class HodFormEntriesRelationManager extends RelationManager
                                 $record->update(['hidden' => true]);
                             }
                         }
-                        
+
                         Notification::make()
                             ->title('Success')
                             ->body('All selected entries marked Successfully.')
