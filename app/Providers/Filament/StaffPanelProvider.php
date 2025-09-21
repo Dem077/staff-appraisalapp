@@ -12,12 +12,14 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class StaffPanelProvider extends PanelProvider
@@ -40,6 +42,23 @@ class StaffPanelProvider extends PanelProvider
             ->widgets([
                 Widgets\AccountWidget::class,
             ])
+            ->renderHook(PanelsRenderHook::BODY_START, function (): string {
+
+                    return Blade::render(<<<'HTML'
+                            <style>
+                                @font-face {
+                                    font-family: 'Faruma';
+                                    src: url('/fonts/Faruma.otf') format('opentype');
+                                    font-weight: normal;
+                                    font-style: normal;
+                                }
+                                .thaana-keyboard {
+                                    font-family: 'Faruma';
+                                }
+                            </style>
+                    HTML, ); // Pass the $doctorName variable to Blade::render
+
+            })
             ->plugins([
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
                     ->gridColumns([

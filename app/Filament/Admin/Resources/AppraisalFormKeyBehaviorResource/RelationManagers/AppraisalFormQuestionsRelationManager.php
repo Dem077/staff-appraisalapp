@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\AppraisalFormKeyBehaviorResource\RelationManagers;
 
+use App\Forms\Components\ThaanaInput;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -22,6 +23,10 @@ class AppraisalFormQuestionsRelationManager extends RelationManager
                     ->required()
                     ->columnSpanFull()
                     ->maxLength(255),
+                ThaanaInput::make('dhivehi_behavioral_indicators')
+                    ->label('Name (Thaana)')
+                    ->columnSpanFull(),
+
             ]);
     }
 
@@ -31,6 +36,12 @@ class AppraisalFormQuestionsRelationManager extends RelationManager
             ->recordTitleAttribute('id')
             ->columns([
                 Tables\Columns\TextColumn::make('behavioral_indicators'),
+                Tables\Columns\Layout\Split::make([
+
+                    Tables\Columns\TextColumn::make('dhivehi_behavioral_indicators')
+                        ->label('Behavioral indicators (ދިވެހި)')
+                        ->extraAttributes(['style' => 'direction: rtl; font-family: Faruma ']),
+                ]),
             ])
             ->filters([
                 //

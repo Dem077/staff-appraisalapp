@@ -17,6 +17,7 @@
         "@tailwindcss/typography": "^0.5.16",
         "autoprefixer": "^10.4.21",
         "postcss": "^8.5.3",
-        "postcss-nesting": "^13.0.1"
+        "postcss-nesting": "^13.0.1",
+        "thaana-keyboard": "^2.0.7"
     }
 }

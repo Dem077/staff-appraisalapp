@@ -59,6 +59,7 @@ Route::get('/appraisal-form-fill/{record}', function ($record) {
                 if ($entry) {
                     $behaviorSection['indicators'][] = [
                         'text' => $question->behavioral_indicators,
+                        'dhivehi_text' => $question->dhivehi_behavioral_indicators,
                         'selfScore' => '', // Fill if needed
                         'question_id' => $question->id,
                     ];
@@ -105,6 +106,7 @@ Route::post('/appraisal-form-fill/{record}', function ($record) {
                 if ($entry) {
                     $behaviorSection['indicators'][] = [
                         'text' => $question->behavioral_indicators,
+                        'dhivehi_text' => $question->dhivehi_behavioral_indicators,
                         'selfScore' => '', // Fill if needed
                         'question_id' => $question->id,
                     ];
@@ -188,6 +190,7 @@ Route::get('/supervisor-appraisal-form-fill/{record}', function ($record) {
                 if ($entry) {
                     $behaviorSection['indicators'][] = [
                         'text' => $question->behavioral_indicators,
+                        'dhivehi_text' => $question->dhivehi_behavioral_indicators,
                         'selfScore' =>  $entry->staff_score,
                         'supervisorScore' =>  '',
                         'supervisorcomment' =>  '',
@@ -235,6 +238,7 @@ Route::post('/supervisor-appraisal-form-fill/{record}', function ($record) {
                 if ($entry) {
                     $behaviorSection['indicators'][] = [
                         'text' => $question->behavioral_indicators,
+                        'dhivehi_text' => $question->dhivehi_behavioral_indicators,
                         'selfScore' => $entry->staff_score,
                         'supervisorScore' => $entry->supervisor_score,
                         'supervisorcomment' => $entry->supervisor_comment,
@@ -313,6 +317,7 @@ Route::get('/hod-appraisal-form-fill/{record}', function ($record) {
                 if ($entry) {
                     $behaviorSection['indicators'][] = [
                         'text' => $question->behavioral_indicators,
+                        'dhivehi_text' => $question->dhivehi_behavioral_indicators,
                         'selfScore' => '', // Fill if needed
                         'question_id' => $question->id,
                     ];
@@ -338,7 +343,7 @@ Route::post('/hod-appraisal-form-fill/{record}', function ($record) {
     $request = request()->all();
     $assigned3 = \App\Models\FormsAssignedToHod::findOrFail($record);
     $answers = $request['appraisalScores'] ?? [];
-
+    dd($request);
     // Rebuild appraisalData from relations (same as GET route)
     $appraisalData3 = [];
     foreach ($assigned3->appraisalForm->appraisalFormCategories as $category) {
@@ -359,6 +364,7 @@ Route::post('/hod-appraisal-form-fill/{record}', function ($record) {
                 if ($entry) {
                     $behaviorSection['indicators'][] = [
                         'text' => $question->behavioral_indicators,
+                        'dhivehi_text' => $question->dhivehi_behavioral_indicators,
                         'self_score' => '', // Fill if needed
                         'question_id' => $question->id,
                     ];
@@ -437,6 +443,7 @@ Route::get('/assignee-hod-appraisal-form-fill/{record}', function ($record) {
 //            $assignee = 8; //temp
             $assigneerecord = \App\Models\HodFormAssignee::where('forms_assigned_to_hod_id', $assigned->id)
                 ->where('assignee_id', $assignee)
+                ->where('status', 'pending_staff_appraisal')
                 ->first();
             foreach ($behavior->appraisalFormQuestions as $question) {
                 $entry = $assigneerecord->hodFormAssigneeEntries()
@@ -446,6 +453,7 @@ Route::get('/assignee-hod-appraisal-form-fill/{record}', function ($record) {
                 if ($entry) {
                     $behaviorSection['indicators'][] = [
                         'text' => $question->behavioral_indicators,
+                        'dhivehi_text' => $question->dhivehi_behavioral_indicators,
                         'selfScore' =>  $entry->staff_score,
                         'supervisorScore' =>  '',
                         'supervisorcomment' =>  '',
@@ -490,13 +498,14 @@ Route::post('/assignee-hod-appraisal-form-fill/{record}', function ($record) {
                 'indicators' => [],
             ];
             foreach ($behavior->appraisalFormQuestions as $question) {
-                $entry = \App\Models\AppraisalFormEntries::where('appraisal_assigned_to_staff_id', $assigned2->id)
+                $entry = \App\Models\HodFormAssigneeEntry::where('hod_form_assignee_id', $assigned2->id)
                     ->where('question_id', $question->id)
                     ->where('hidden', false)
                     ->first();
                 if ($entry) {
                     $behaviorSection['indicators'][] = [
                         'text' => $question->behavioral_indicators,
+                        'dhivehi_text' => $question->dhivehi_behavioral_indicators,
                         'selfScore' => $entry->staff_score,
                         'supervisorScore' => $entry->supervisor_score,
                         'supervisorcomment' => $entry->supervisor_comment,
@@ -514,6 +523,7 @@ Route::post('/assignee-hod-appraisal-form-fill/{record}', function ($record) {
     }
     $assigneeform = \App\Models\HodFormAssignee::where('forms_assigned_to_hod_id', $assigned2->id)
         ->where('assignee_id', $assignee->id)
+        ->where('status', 'pending_staff_appraisal')
         ->first();
     // Only update supervisor fields
     foreach ($answers as $categoryIndex => $behaviors) {

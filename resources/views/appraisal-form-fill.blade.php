@@ -98,6 +98,7 @@
                                     @foreach($behavior['indicators'] as $indicatorIndex => $indicator)
                                         <div class="bg-gray-50 p-3 md:p-5 rounded-xl border border-gray-200 mb-3 md:mb-4">
                                             <p class="text-sm md:text-base font-medium text-gray-800 mb-2 md:mb-3">{{ $indicator['text'] }}</p>
+                                            <p class=" md:text-base font-medium text-gray-800 mb-2 md:mb-3" style="direction: rtl;font-size: 19px; font-family: Faruma ">{{ $indicator['dhivehi_text'] }}</p>
                                             <div class="flex flex-wrap gap-2 md:gap-3">
                                                 @foreach($ratingScale as $rating)
                                                     <label class="inline-flex items-center cursor-pointer px-2 md:px-4 py-1 md:py-2 border border-gray-200 rounded-full text-xs md:text-sm font-medium text-green-700 hover:bg-green-50 transition-all duration-200">

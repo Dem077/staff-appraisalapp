@@ -39,7 +39,7 @@ class ListAppraisalFormAssignedToStaff extends ListRecords
                         ->searchable()
                         ->required(),
                     \Filament\Forms\Components\Select::make('supervisor_id')
-                        ->label('Staff')
+                        ->label('Supiervisor')
                         ->options(fn () => $this->groupedStaffOptions())
                         ->preload()
                         ->searchable()

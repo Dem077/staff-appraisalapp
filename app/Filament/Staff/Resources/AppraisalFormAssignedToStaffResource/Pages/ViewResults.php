@@ -145,6 +145,8 @@ class ViewResults extends Page implements HasTable
                     ->suffix('/5')
                     ->summarize(Summarizer::make()
                         ->label('')
+                        ->numeric( decimalPlaces: 1,)
+                        ->suffix('%')
                         ->using(fn (\Illuminate\Database\Query\Builder $query) => (($query->where('hidden', false)->sum('supervisor_score')) / ($query->where('hidden', false)->count() * 5))*100)
                     ),
 

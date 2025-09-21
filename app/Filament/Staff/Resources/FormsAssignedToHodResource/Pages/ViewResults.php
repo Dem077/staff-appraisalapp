@@ -100,7 +100,6 @@ class ViewResults extends Page implements HasTable
                                 if($data['supervisor_comment']){
                                     $record->update([
                                         'supervisor_comment'=> $data['supervisor_comment'],
-                                        'status' => HODFormassigneeStatus::Completed,
                                     ]);
                                     Notification::make('comment_added')
                                         ->body('Comment added Successfully')

@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources;
 use App\Enum\AppraisalFormCategoryType;
 use App\Filament\Admin\Resources\AppraisalFormKeyBehaviorResource\Pages;
 use App\Filament\Admin\Resources\AppraisalFormKeyBehaviorResource\RelationManagers;
+use App\Forms\Components\ThaanaInput;
 use App\Models\AppraisalFormCategory;
 use App\Models\AppraisalFormKeyBehavior;
 use Filament\Forms;
@@ -65,11 +66,14 @@ class AppraisalFormKeyBehaviorResource extends Resource
                     ->relationship()
                     ->columnSpanFull()
                     ->hiddenOn('edit')
-                    ->simple(
+                    ->schema([
                         Forms\Components\TextInput::make('behavioral_indicators')
                             ->required()
                             ->maxLength(255),
-                    )
+                        ThaanaInput::make('dhivehi_behavioral_indicators')
+                            ->label('Name (Thaana)')
+                            ->extraAttributes(['style' => 'direction: rtl; font-family: Faruma ']),
+                    ])
                     ->required(),
             ]);
     }

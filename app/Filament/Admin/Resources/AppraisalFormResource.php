@@ -6,6 +6,7 @@ use App\Enum\AppraisalFormLevel;
 use App\Enum\AppraisalFormType;
 use App\Filament\Admin\Resources\AppraisalFormResource\Pages;
 use App\Filament\Admin\Resources\AppraisalFormResource\RelationManagers;
+use App\Forms\Components\ThaanaInput;
 use App\Models\AppraisalForm;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -14,6 +15,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use function Termwind\style;
 
 class AppraisalFormResource extends Resource
 {
@@ -29,13 +31,17 @@ class AppraisalFormResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
+//                Forms\Components\TextInput::make('name')
+//                    ->required()
+//                    ->maxLength(255),
                 Forms\Components\Select::make('type')
                     ->required()
                     ->native(false)
                     ->options(AppraisalFormType::class),
+                ThaanaInput::make('name')
+                    ->label('Name (Thaana)')
+                    ->extraAttributes(['style' => 'direction: rtl; unicode-bidi: bidi-override; '])
+                    ->required(),
                 Forms\Components\Toggle::make('is_active')
                     ->default(true),
                 Forms\Components\Select::make('level')

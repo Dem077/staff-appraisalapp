@@ -9,6 +9,7 @@ class AppraisalFormQuestions extends Model
     protected $fillable = [
         'appraisal_form_key_behavior_id',
         'behavioral_indicators',
+        'dhivehi_behavioral_indicators',
     ];
     public function appraisalFormKeyBehavior()
     {
