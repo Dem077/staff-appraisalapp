@@ -18,6 +18,13 @@ class AppraisalFormAssignedToStaffPolicy
         }
         return false;
     }
+    /**
+     * Determine whether the user can view any models.
+     */
+    public function viewAll( $user): bool
+    {
+        return $user->can('view_all_appraisal::form::assigned::to::staff');
+    }
 
     public function assign($user): bool
     {

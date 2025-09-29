@@ -7,6 +7,7 @@ use App\Enum\AssignedFormStatus;
 use App\Filament\Staff\Resources\AppraisalFormAssignedToStaffResource\Pages;
 use App\Filament\Staff\Resources\AppraisalFormAssignedToStaffResource\RelationManagers;
 use App\Models\AppraisalFormAssignedToStaff;
+use App\Models\FormsAssignedToHod;
 use App\Models\Staff;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms;
@@ -38,6 +39,7 @@ class AppraisalFormAssignedToStaffResource extends Resource implements HasShield
             return [
                 'view_any',
                 'view',
+                'view_all',
                 'create',
                 'update',
                 'delete',
@@ -50,9 +52,14 @@ class AppraisalFormAssignedToStaffResource extends Resource implements HasShield
         }
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
-            ->where('supervisor_id' , Auth::user()->id)
-            ->orwhere('staff_id', Auth::user()->id);
+        if(Auth::user()->can('view_all', AppraisalFormAssignedToStaff::class)){
+            return parent::getEloquentQuery();
+        }
+        else {
+            return parent::getEloquentQuery()
+                ->where('supervisor_id', Auth::user()->id)
+                ->orwhere('staff_id', Auth::user()->id);
+        }
     }
 
     public static function form(Form $form): Form
