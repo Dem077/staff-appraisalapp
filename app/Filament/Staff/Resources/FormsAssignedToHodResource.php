@@ -52,7 +52,7 @@ class FormsAssignedToHodResource extends Resource implements HasShieldPermission
     }
      public static function getEloquentQuery(): Builder
      {
-         if(Auth::user()->can('view_all', FormsAssignedToHod::class)){
+         if(Auth::user()->can('view_all_forms::assigned::to::hod')){
              return parent::getEloquentQuery();
          }
          else{
@@ -139,7 +139,7 @@ class FormsAssignedToHodResource extends Resource implements HasShieldPermission
                 Tables\Actions\Action::make('results')
                     ->label('View Details')
                     ->button()
-                    ->visible(fn ($record) => ($record->status === HODFormassigneeStatus::Completed || $record->status === HODFormassigneeStatus::PendingAssignee || $record->status === HODFormassigneeStatus::HRComment) && $record->hod_id ===  auth('staff')->user()?->id &&  $record->supervisor_id ===  auth('staff')->user()?->id)
+                    ->visible(fn ($record) => ($record->status === HODFormassigneeStatus::Completed || $record->status === HODFormassigneeStatus::PendingAssignee || $record->status === HODFormassigneeStatus::HRComment) && $record->hod_id ===  auth('staff')->user()?->id &&  $record->supervisor_id ===  auth('staff')->user()?->id || Auth::user()->can('view_all_forms::assigned::to::hod'))
                     ->color('primary')
                     ->url(fn($record) => route('filament.staff.resources.forms-assigned-to-hods.results', ['record' => $record]))
                     ,

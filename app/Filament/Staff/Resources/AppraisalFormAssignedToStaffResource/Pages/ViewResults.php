@@ -92,7 +92,7 @@ class ViewResults extends Page implements HasTable
                         Actions\Action::make('add_hr_comment')
                         ->label('Add HR Comment')
                         ->icon('heroicon-o-plus')
-                            ->visible(fn ($record) => $record->status === AssignedFormStatus::HRComment && in_array('HR', Shortcuts::callgetapi('/user/roles', ['id' => auth('staff')->user()->id])->json() ?? []))
+                            ->visible(fn ($record) => $record->status === AssignedFormStatus::HRComment && in_array('HR', Shortcuts::callgetapi('/user/roles', ['id' => auth('staff')->user()->api_id])->json() ?? []))
                         ->form([
                             Textarea::make('hr_comment'),
                         ])

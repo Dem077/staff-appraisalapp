@@ -52,7 +52,7 @@ class AppraisalFormAssignedToStaffResource extends Resource implements HasShield
         }
     public static function getEloquentQuery(): Builder
     {
-        if(Auth::user()->can('view_all', AppraisalFormAssignedToStaff::class)){
+        if(Auth::user()->can('view_all_appraisal::form::assigned::to::staff')){
             return parent::getEloquentQuery();
         }
         else {
@@ -165,7 +165,7 @@ class AppraisalFormAssignedToStaffResource extends Resource implements HasShield
                     ->label('View Details')
                         ->button()
                         ->color('primary')
-                        ->visible(fn($record) => $record->status === AssignedFormStatus::HRComment && $record->supervisor_id ===  auth('staff')->user()->id)
+                        ->visible(fn($record) => $record->status === AssignedFormStatus::HRComment && $record->supervisor_id ===  auth('staff')->user()->id || $record->status === AssignedFormStatus::HRComment && Auth::user()->can('view_all_appraisal::form::assigned::to::staff'))
                         ->url(fn($record) => route('filament.staff.resources.appraisal-form-assigned-to-staffs.results', ['record' => $record]))
                         ,
             ])

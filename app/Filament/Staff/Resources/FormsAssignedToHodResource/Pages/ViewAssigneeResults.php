@@ -101,7 +101,7 @@ class ViewAssigneeResults extends Page implements HasTable
                                         \Filament\Infolists\Components\Actions\Action::make('add_hr_comment')
                                         ->label('Add Comment')
                                         ->icon('heroicon-o-plus')
-                                        ->visible(fn ($record) => $record->status === HODFormassigneeStatus::HRComment && in_array('HR', Shortcuts::callgetapi('/user/roles', ['id' => auth('staff')->user()->id])->json() ?? []))
+                                        ->visible(fn ($record) => $record->status === HODFormassigneeStatus::HRComment && in_array('HR', Shortcuts::callgetapi('/user/roles', ['id' => auth('staff')->user()->api_id])->json() ?? []))
                                         ->form([
                                             Textarea::make('hr_comment'),
                                         ])
