@@ -137,6 +137,7 @@ class ViewResults extends Page implements HasTable
     {
         return $table
             ->heading('Behavioral Indicators and Scores')
+            ->paginated(false)
             ->groups([
                 Group::make('question.appraisalFormKeyBehavior.appraisalFormCategory.name')
                     ->label('')
