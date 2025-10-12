@@ -9,6 +9,7 @@ use App\Filament\Staff\Resources\FormsAssignedToHodResource\RelationManagers;
 use App\Models\FormsAssignedToHod;
 use App\Models\HodFormassignee;
 use App\Models\Staff;
+use App\Services\Shortcuts;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -133,13 +134,13 @@ class FormsAssignedToHodResource extends Resource implements HasShieldPermission
                 Tables\Actions\Action::make('fill_hod_assignee')
                     ->label('Fill Form')
                     ->color('primary')
-                    ->visible(fn($record) => HodFormassignee::where('assignee_id',auth('staff')->user()->id)->where('forms_assigned_to_hod_id', $record->id)->where('status','pending_staff_appraisal')->first() && $record->status === HODFormassigneeStatus::PendingAssignee && $record->hodFormAssignees->contains('assignee_id',  auth('staff')->user()?->id))
+                    ->visible(fn ($record) => $record->hodFormAssignees->where('assignee_id',auth('staff')->user()->id)->where('status','pending_staff_appraisal')->first() && $record->status === HODFormassigneeStatus::PendingAssignee && $record->hodFormAssignees->contains('assignee_id',  auth('staff')->user()?->id))
                     ->url(fn($record) => route('assignee-hod-appraisal-form-fill', ['record' => $record]))
                     ->openUrlInNewTab(),
                 Tables\Actions\Action::make('results')
                     ->label('View Details')
                     ->button()
-                    ->visible(fn ($record) => ($record->status === HODFormassigneeStatus::Completed || $record->status === HODFormassigneeStatus::PendingAssignee || $record->status === HODFormassigneeStatus::HRComment) && $record->hod_id ===  auth('staff')->user()?->id &&  $record->supervisor_id ===  auth('staff')->user()?->id || Auth::user()->can('view_all_forms::assigned::to::hod'))
+                    ->visible(fn ($record) => ($record->status === HODFormassigneeStatus::Completed || $record->status === HODFormassigneeStatus::PendingAssignee || $record->status === HODFormassigneeStatus::HRComment) && ($record->hod_id ===  auth('staff')->user()?->id ||  $record->supervisor_id ===  auth('staff')->user()?->id || Auth::user()->can('view_all_forms::assigned::to::hod') || in_array('HR', Shortcuts::callgetapi('/user/roles', ['id' => auth('staff')->user()->api_id])->json() ?? [])))
                     ->color('primary')
                     ->url(fn($record) => route('filament.staff.resources.forms-assigned-to-hods.results', ['record' => $record]))
                     ,

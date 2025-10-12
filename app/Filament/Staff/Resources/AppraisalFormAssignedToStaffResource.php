@@ -9,6 +9,7 @@ use App\Filament\Staff\Resources\AppraisalFormAssignedToStaffResource\RelationMa
 use App\Models\AppraisalFormAssignedToStaff;
 use App\Models\FormsAssignedToHod;
 use App\Models\Staff;
+use App\Services\Shortcuts;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms;
 use Filament\Forms\Components\Tabs\Tab;
@@ -165,7 +166,7 @@ class AppraisalFormAssignedToStaffResource extends Resource implements HasShield
                     ->label('View Details')
                         ->button()
                         ->color('primary')
-                        ->visible(fn($record) => $record->status === AssignedFormStatus::HRComment && $record->supervisor_id ===  auth('staff')->user()->id || $record->status === AssignedFormStatus::HRComment && Auth::user()->can('view_all_appraisal::form::assigned::to::staff'))
+                        ->visible(fn($record) => $record->status !== AssignedFormStatus::PendingStaff && ($record->staff_id === auth('staff')->user()->id ||  $record->supervisor_id === auth('staff')->user()->id || in_array('HR', Shortcuts::callgetapi('/user/roles', ['id' => auth('staff')->user()->api_id])->json() ?? [])))
                         ->url(fn($record) => route('filament.staff.resources.appraisal-form-assigned-to-staffs.results', ['record' => $record]))
                         ,
             ])
