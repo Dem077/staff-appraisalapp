@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Widgets;
 
+use Filament\Tables\Columns\TextColumn;
 use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -51,21 +52,21 @@ class LatestAccessLogs extends BaseWidget
                 Activity::query()->latest()->take(5)
             )
             ->columns([
-                Tables\Columns\TextColumn::make('log_name')
+                TextColumn::make('log_name')
                     ->badge()
                     ->colors(static::getLogNameColors())
                     ->label(__('filament-logger::filament-logger.resource.label.type'))
                     ->formatStateUsing(fn ($state) => ucwords($state))
                     ->sortable(),
-                Tables\Columns\TextColumn::make('event')
+                TextColumn::make('event')
                     ->label(__('filament-logger::filament-logger.resource.label.event'))
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('description')
+                TextColumn::make('description')
                     ->label(__('filament-logger::filament-logger.resource.label.description'))
                     ->wrap(),
 
-                Tables\Columns\TextColumn::make('subject_type')
+                TextColumn::make('subject_type')
                     ->label(__('filament-logger::filament-logger.resource.label.subject'))
                     ->formatStateUsing(function ($state, Model $record) {
                         /** @var Activity $record */
@@ -76,10 +77,10 @@ class LatestAccessLogs extends BaseWidget
                         return Str::of($state)->afterLast('\\')->headline() . ' # ' . $record->subject_id;
                     }),
 
-                Tables\Columns\TextColumn::make('causer.name')
+                TextColumn::make('causer.name')
                     ->label(__('filament-logger::filament-logger.resource.label.user')),
 
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->label(__('filament-logger::filament-logger.resource.label.logged_at'))
                     ->dateTime(config('d/m/Y H:i A'))
                     ->sortable(),

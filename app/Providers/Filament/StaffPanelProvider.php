@@ -2,6 +2,14 @@
 
 namespace App\Providers\Filament;
 
+use Filament\Pages\Dashboard;
+use Filament\Widgets\AccountWidget;
+use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use Awcodes\LightSwitch\LightSwitchPlugin;
+use Awcodes\LightSwitch\Enums\Alignment;
+use Hasnayeen\Themes\ThemesPlugin;
+use Njxqlus\FilamentProgressbar\FilamentProgressbarPlugin;
+use Hasnayeen\Themes\Http\Middleware\SetTheme;
 use App\Filament\Staff\Pages\Auth\CustomLogin;
 use App\Http\Middleware\ExternalApiAuthenticate;
 use Filament\Http\Middleware\Authenticate;
@@ -35,12 +43,12 @@ class StaffPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Staff/Resources'), for: 'App\\Filament\\Staff\\Resources')
             ->discoverPages(in: app_path('Filament/Staff/Pages'), for: 'App\\Filament\\Staff\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                Dashboard::class,
             ])
             ->login(CustomLogin::class)
             ->discoverWidgets(in: app_path('Filament/Staff/Widgets'), for: 'App\\Filament\\Staff\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
+                AccountWidget::class,
             ])
             ->renderHook(PanelsRenderHook::BODY_START, function (): string {
 
@@ -60,7 +68,7 @@ class StaffPanelProvider extends PanelProvider
 
             })
             ->plugins([
-                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
+                FilamentShieldPlugin::make()
                     ->gridColumns([
                         'default' => 2,
                         'lg' => 3,
@@ -74,14 +82,13 @@ class StaffPanelProvider extends PanelProvider
                         'default' => 2,
                         'lg' => 3,
                     ]),
-                \Awcodes\LightSwitch\LightSwitchPlugin::make()
-                    ->position(\Awcodes\LightSwitch\Enums\Alignment::BottomCenter)
+                LightSwitchPlugin::make()
+                    ->position(Alignment::BottomCenter)
                     ->enabledOn([
                         'auth.login',
                         'auth.password',
                     ]),
-                \Hasnayeen\Themes\ThemesPlugin::make(),
-                \Njxqlus\FilamentProgressbar\FilamentProgressbarPlugin::make()->color('rgba(7, 121, 50, 1)'),
+                FilamentProgressbarPlugin::make()->color('rgba(7, 121, 50, 1)'),
                 ])
             ->middleware([
                 EncryptCookies::class,
@@ -93,7 +100,6 @@ class StaffPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-                \Hasnayeen\Themes\Http\Middleware\SetTheme::class,
             ])
             ->authGuard('staff')
             ->viteTheme('resources/css/filament/admin/theme.css')

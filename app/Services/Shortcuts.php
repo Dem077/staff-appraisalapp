@@ -28,7 +28,7 @@ class Shortcuts
 
     public static function setcolor($color_rgb)
     {
-        return Color::hex(Rgb::fromString($color_rgb)->toHex());
+        return Color::generateV3Palette(Rgb::fromString($color_rgb)->toHex());
     }
 
 }

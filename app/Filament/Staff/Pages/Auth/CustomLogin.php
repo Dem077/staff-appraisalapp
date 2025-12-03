@@ -2,30 +2,32 @@
 
 namespace App\Filament\Staff\Pages\Auth;
 
+use Filament\Auth\Pages\Login;
+use Filament\Schemas\Schema;
+use Filament\Auth\Http\Responses\Contracts\LoginResponse;
+use Illuminate\Support\Facades\Http;
+use App\Models\Staff;
 use Carbon\Carbon;
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Http\Responses\Auth\Contracts\LoginResponse;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Notifications\Notification;
-use Filament\Pages\Auth\Login as BaseLoginPage;
 use Filament\Support\Enums\Alignment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Jenssegers\Agent\Agent;
 
-class CustomLogin extends BaseLoginPage
+class CustomLogin extends Login
 {
 
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 TextInput::make('identifier')
                     ->label('Email or NID/PP or Staff ID')
                     ->required(),
@@ -54,7 +56,7 @@ class CustomLogin extends BaseLoginPage
         $data = $this->form->getState();
 
         // Call external API to validate credentials
-        $response = \Illuminate\Support\Facades\Http::withHeaders([
+        $response = Http::withHeaders([
             'Accept' => 'application/json',
         ])->timeout(10)->post(config('app.apiurl') . '/login', [
             'identifier' => $data['identifier'],
@@ -65,7 +67,7 @@ class CustomLogin extends BaseLoginPage
             $staffData = $response->json('user');
 
             // Find or create local staff record
-            $staff = \App\Models\Staff::updateOrCreate(
+            $staff = Staff::updateOrCreate(
                 [
                     'emp_no' => $staffData['emp_no'],
                 ],
@@ -93,7 +95,7 @@ class CustomLogin extends BaseLoginPage
             );
             if($staffData['active']) {
                 // Log in the staff locally using the staff guard
-                \Illuminate\Support\Facades\Auth::guard('staff')->login($staff);
+                Auth::guard('staff')->login($staff);
 
                 session()->regenerate();
             }

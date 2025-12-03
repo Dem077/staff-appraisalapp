@@ -2,6 +2,10 @@
 
 namespace App\Forms\Components;
 
+use Filament\Forms\Components\Concerns\CanBeAutocompleted;
+use Filament\Forms\Components\Concerns\CanBeReadOnly;
+use Filament\Forms\Components\Concerns\HasExtraInputAttributes;
+use Filament\Forms\Components\Concerns\HasPlaceholder;
 use Closure;
 use Filament\Forms\Components\Field;
 use Filament\Forms\Components\Contracts\CanBeLengthConstrained;
@@ -11,11 +15,11 @@ use Filament\Support\Concerns\HasExtraAlpineAttributes;
 class ThaanaInput extends Field implements CanBeLengthConstrained
 {
     use CanDisableGrammarly;
-    use \Filament\Forms\Components\Concerns\CanBeAutocompleted;
+    use CanBeAutocompleted;
     use \Filament\Forms\Components\Concerns\CanBeLengthConstrained;
-    use \Filament\Forms\Components\Concerns\CanBeReadOnly;
-    use \Filament\Forms\Components\Concerns\HasExtraInputAttributes;
-    use \Filament\Forms\Components\Concerns\HasPlaceholder;
+    use CanBeReadOnly;
+    use HasExtraInputAttributes;
+    use HasPlaceholder;
     use HasExtraAlpineAttributes;
 
     protected string $view = 'forms.components.thaana-input';

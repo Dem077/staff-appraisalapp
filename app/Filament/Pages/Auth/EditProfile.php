@@ -2,18 +2,25 @@
 
 namespace App\Filament\Pages\Auth;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Grid;
+use Filament\Forms\Components\FileUpload;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\ViewField;
+use Filament\Schemas\Components\Actions;
+use Filament\Actions\Action;
 use Carbon\Carbon;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
-use Filament\Pages\Auth\EditProfile as BaseEditProfile;
 use Filament\Support\Enums\Alignment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Jenssegers\Agent\Agent;
 
-class EditProfile extends BaseEditProfile
+class EditProfile extends \Filament\Auth\Pages\EditProfile
 {
     public static function getSessions(): array
     {
@@ -89,13 +96,13 @@ class EditProfile extends BaseEditProfile
             ->delete();
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Grid::make('')
+        return $schema
+            ->components([
+                Grid::make('')
                     ->schema([
-                        Forms\Components\FileUpload::make('avatar_url')
+                        FileUpload::make('avatar_url')
                             ->label('Avatar')
                             ->directory('avatars')
                             ->image()
@@ -106,7 +113,7 @@ class EditProfile extends BaseEditProfile
                     ])
                     ->columnSpan(2)
                     ->columns(1),
-                Forms\Components\Fieldset::make('Details')
+                Fieldset::make('Details')
                     ->schema([
                         $this->getNameFormComponent()
                             ->inlineLabel(false)
@@ -114,7 +121,7 @@ class EditProfile extends BaseEditProfile
                         $this->getEmailFormComponent()
                             ->inlineLabel(false)
                             ->columnSpan(2),
-                        Forms\Components\TextInput::make('Current password')
+                        TextInput::make('Current password')
                             ->label('Current Password')
                             ->password()
                             ->required()
@@ -130,23 +137,23 @@ class EditProfile extends BaseEditProfile
                     ])
                     ->columnSpan(4)
                     ->columns(2),
-                Forms\Components\Section::make(__('Browser Sessions '))
+                Section::make(__('Browser Sessions '))
                     ->description(__('Manage and log out your active sessions on other browsers and devices. '))
                     ->schema([
-                        Forms\Components\ViewField::make('browserSessions')
+                        ViewField::make('browserSessions')
                             ->hiddenLabel()
                             ->view('filament-edit-profile::forms.components.browser-sessions')
                             ->viewData(['data' => self::getSessions()])
                             ->columnSpan(1),
-                        Forms\Components\Actions::make([
-                            Forms\Components\Actions\Action::make('deleteBrowserSessions')
+                        Actions::make([
+                            Action::make('deleteBrowserSessions')
                                 ->label(__('filament-edit-profile::default.browser_sessions_log_out'))
                                 ->requiresConfirmation()
                                 ->modalHeading(__('filament-edit-profile::default.browser_sessions_log_out'))
                                 ->modalDescription(__('filament-edit-profile::default.browser_sessions_confirm_pass'))
                                 ->modalSubmitActionLabel(__('filament-edit-profile::default.browser_sessions_log_out'))
-                                ->form([
-                                    Forms\Components\TextInput::make('password')
+                                ->schema([
+                                    TextInput::make('password')
                                         ->password()
                                         ->revealable()
                                         ->label(__('filament-edit-profile::default.password'))

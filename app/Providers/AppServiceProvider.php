@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Policies\ActivityPolicy;
-use Filament\Actions\MountableAction;
+use Filament\Actions\Action;
 use Filament\Notifications\Livewire\Notifications;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
@@ -39,8 +39,9 @@ class AppServiceProvider extends ServiceProvider
                 ->danger()
                 ->send();
         };
-        MountableAction::configureUsing(function (MountableAction $action) {
+        Action::configureUsing(function (Action $action) {
             $action->modalFooterActionsAlignment(Alignment::Right);
         });
     }
+
 }

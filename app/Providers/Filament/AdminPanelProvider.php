@@ -2,6 +2,20 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Auth\EditProfile;
+use Filament\Support\Enums\Width;
+use Filament\Pages\Dashboard;
+use Awcodes\Overlook\Widgets\OverlookWidget;
+use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use Hasnayeen\Themes\ThemesPlugin;
+use Njxqlus\FilamentProgressbar\FilamentProgressbarPlugin;
+use DiogoGPinto\AuthUIEnhancer\AuthUIEnhancerPlugin;
+use Awcodes\LightSwitch\LightSwitchPlugin;
+use Awcodes\LightSwitch\Enums\Alignment;
+use Awcodes\Overlook\OverlookPlugin;
+use App\Filament\Admin\Resources\Users\UserResource;
+use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
+use Hasnayeen\Themes\Http\Middleware\SetTheme;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -13,7 +27,6 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Support\Enums\MaxWidth;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -35,23 +48,23 @@ class AdminPanelProvider extends PanelProvider
             ->spa()
             ->login()
             ->passwordReset()
-            ->profile(\App\Filament\Pages\Auth\EditProfile::class, isSimple: false)
+            ->profile(EditProfile::class, isSimple: false)
             ->defaultThemeMode(ThemeMode::Light)
             ->font('Montserrat')
             ->colors([
                 'primary' => Color::Blue,
             ])
-            ->maxContentWidth(MaxWidth::SevenExtraLarge)
+            ->maxContentWidth(Width::SevenExtraLarge)
             ->sidebarCollapsibleOnDesktop()
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\\Filament\\Admin\\Resources')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\\Filament\\Admin\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                Dashboard::class,
             ])
             ->discoverClusters(in: app_path('Filament/Admin/Clusters'), for: 'App\\Filament\\Admin\\Clusters')
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\\Filament\\Admin\\Widgets')
             ->widgets([
-                \Awcodes\Overlook\Widgets\OverlookWidget::class,
+                OverlookWidget::class,
             ])
             ->navigationGroups([
                 NavigationGroup::make()
@@ -67,7 +80,7 @@ class AdminPanelProvider extends PanelProvider
                 //     ->icon('heroicon-m-user-circle'),
             ])
             ->plugins([
-                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
+                FilamentShieldPlugin::make()
                     ->gridColumns([
                         'default' => 2,
                         'lg' => 3,
@@ -81,25 +94,24 @@ class AdminPanelProvider extends PanelProvider
                         'default' => 2,
                         'lg' => 3,
                     ]),
-                \Hasnayeen\Themes\ThemesPlugin::make(),
-                \Njxqlus\FilamentProgressbar\FilamentProgressbarPlugin::make()->color('#29b'),
-                \DiogoGPinto\AuthUIEnhancer\AuthUIEnhancerPlugin::make()
+                FilamentProgressbarPlugin::make()->color('#29b'),
+                AuthUIEnhancerPlugin::make()
                     ->showEmptyPanelOnMobile(false)
                     ->formPanelPosition('right')
                     ->formPanelWidth('40%')
                     ->emptyPanelBackgroundImageOpacity('70%')
                     ->emptyPanelBackgroundImageUrl('https://picsum.photos/seed/picsum/1260/750.webp/?blur=1'),
-                \Awcodes\LightSwitch\LightSwitchPlugin::make()
-                    ->position(\Awcodes\LightSwitch\Enums\Alignment::BottomCenter)
+                LightSwitchPlugin::make()
+                    ->position(Alignment::BottomCenter)
                     ->enabledOn([
                         'auth.login',
                         'auth.password',
                     ]),
-                \Awcodes\Overlook\OverlookPlugin::make()
+                OverlookPlugin::make()
                     ->includes([
-                        \App\Filament\Admin\Resources\UserResource::class,
+                        UserResource::class,
                     ]),
-                \Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin::make()
+                FilamentEditProfilePlugin::make()
                     ->slug('my-profile')
                     ->setTitle('My Profile')
                     ->shouldRegisterNavigation(false)
@@ -109,7 +121,6 @@ class AdminPanelProvider extends PanelProvider
                     ->shouldShowAvatarForm(),
             ])
             ->resources([
-                config('filament-logger.activity_resource'),
             ])
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->middleware([
@@ -122,7 +133,6 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-                \Hasnayeen\Themes\Http\Middleware\SetTheme::class,
             ])
             ->authMiddleware([
                 Authenticate::class,
