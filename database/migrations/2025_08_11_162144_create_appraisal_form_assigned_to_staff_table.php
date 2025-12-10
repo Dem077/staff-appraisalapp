@@ -26,7 +26,7 @@ return new class extends Migration
             $table->text('supervisor_comment')->nullable();
             $table->text('staff_comment')->nullable();
             $table->text('hr_comment')->nullable();
-            $table->enum('status', ['pending_staff_appraisal', 'pending_supervisor_appraisal','hr_comment', 'complete'])->default('pending_staff_appraisal');
+            $table->enum('status', ['pending_staff_appraisal', 'pending_supervisor_appraisal','hr_comment', 'complete' , 'pending_questionnaire_edit'])->default('pending_questionnaire_edit');
             $table->timestamps();
         });
     }

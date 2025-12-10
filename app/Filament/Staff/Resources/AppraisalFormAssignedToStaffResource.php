@@ -147,7 +147,9 @@ class AppraisalFormAssignedToStaffResource extends Resource implements HasShield
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->visible(fn($record) => $record->status === AssignedFormStatus::PendingStaff && $record->supervisor_id === auth('staff')->user()->id),
+                    ->label('Edit Form Questions')
+                        ->button()
+                    ->visible(fn($record) => $record->status === AssignedFormStatus::PendingQuestionnaireEdit && ($record->supervisor_id === auth('staff')->user()->id || in_array('HR', Shortcuts::callgetapi('/user/roles', ['id' => auth('staff')->user()->api_id])->json() ?? [])) ),
                 Tables\Actions\Action::make('fill_form')
                     ->label('Fill Form')
                         ->button()

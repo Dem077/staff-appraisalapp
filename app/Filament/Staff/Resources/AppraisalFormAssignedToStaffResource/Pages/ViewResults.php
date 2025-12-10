@@ -110,6 +110,12 @@ class ViewResults extends Page implements HasTable
                             }
 
                         }),
+                        Actions\Action::make('download_pdf')
+                            ->label('Download PDF')
+                            ->icon('heroicon-o-arrow-down-tray')
+                            ->visible(fn ($record) => $record->status === AssignedFormStatus::Complete)
+                            ->url(fn ($record) => route('appraisal.results.pdf', $record->id))
+                            ->openUrlInNewTab(),
                     ]),
             ]);
     }

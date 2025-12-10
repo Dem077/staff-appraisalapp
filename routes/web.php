@@ -555,3 +555,41 @@ Route::post('/assignee-hod-appraisal-form-fill/{record}', function ($record) {
     return redirect()->route('filament.staff.resources.forms-assigned-to-hods.index')
         ->with('success', 'Supervisor appraisal submitted successfully!');
 })->name('assignee-hod-appraisal-form-fill.submit');
+
+
+// Route to generate PDF for appraisal results
+Route::get('/appraisal-results/{record}/pdf', function ($record) {
+    $assigned = \App\Models\AppraisalFormAssignedToStaff::with(['staff', 'supervisor', 'appraisalForm.appraisalFormCategories.appraisalFormKeyBehaviors.appraisalFormQuestions'])->findOrFail($record);
+
+    // Prepare data used by the PDF view
+    $entries = \App\Models\AppraisalFormEntries::where('appraisal_assigned_to_staff_id', $assigned->id)
+        ->where('hidden', false)
+        ->get();
+
+    $data = [
+        'assigned' => $assigned,
+        'entries' => $entries,
+    ];
+
+//    // Try to use barryvdh/laravel-dompdf if available
+//    if (class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
+//        return \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.appraisal-results', $data)
+//            ->setPaper('a4', 'landscape')
+//            ->download('appraisal-results-' . $assigned->id . '.pdf');
+//    }
+
+    // Try to use Dompdf directly if available
+    if (class_exists(\Dompdf\Dompdf::class)) {
+        $html = view('pdf.appraisal-results', $data)->render();
+        $dompdf = new \Dompdf\Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
+        return response($dompdf->output())
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename="appraisal-results-' . $assigned->id . '.pdf"');
+    }
+
+    // If no PDF library is available, show error message
+    abort(500, 'PDF library not installed. Please run: composer require barryvdh/laravel-dompdf');
+})->name('appraisal.results.pdf');

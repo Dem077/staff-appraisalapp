@@ -55,7 +55,7 @@ class ListAppraisalFormAssignedToStaff extends ListRecords
                             'staff_id' => $staff->id,
                             'supervisor_id' => $data['supervisor_id'],
                             'assigned_date' => now(),
-                            'status' => \App\Enum\AssignedFormStatus::PendingStaff->value,
+                            'status' => \App\Enum\AssignedFormStatus::PendingQuestionnaireEdit->value,
                         ]);
 
                         // Get all questions for the selected form
