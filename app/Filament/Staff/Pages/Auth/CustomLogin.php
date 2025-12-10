@@ -55,6 +55,7 @@ class CustomLogin extends BaseLoginPage
 
         // Call external API to validate credentials
         $response = \Illuminate\Support\Facades\Http::withHeaders([
+            'X-API-KEY' => config('app.appkey'),
             'Accept' => 'application/json',
         ])->timeout(10)->post(config('app.apiurl') . '/login', [
             'identifier' => $data['identifier'],
