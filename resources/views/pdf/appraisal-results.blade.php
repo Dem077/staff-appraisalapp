@@ -3,8 +3,15 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Staff Appraisal Results</title>
     <style>
+        @font-face {
+            font-family: 'faruma';
+            src: url('{{ public_path("fonts/Faruma.ttf") }}') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
         @page {
             size: A4 landscape;
             margin: 15mm 10mm;
@@ -14,6 +21,13 @@
             font-size: 11px;
             color: #333;
             line-height: 1.5;
+        }
+        .arabic-text {
+            font-family: 'faruma', DejaVu Sans, Arial, sans-serif;
+            direction: rtl;
+            font-size: 14px;
+            color: #666;
+            margin-top: 4px;
         }
         .header {
             display: block;
@@ -189,6 +203,23 @@
             border: 1px solid #6ee7b7;
             background: #ecfdf5;
         }
+        .grand-total-row {
+            background: #047857;
+            font-weight: bold;
+            color: white;
+            font-size: 12px;
+            border: 2px solid #065f46;
+        }
+        .grand-total-row td {
+            padding: 10px 6px;
+            border: 2px solid #065f46;
+            background: #047857;
+            color: white;
+        }
+        .grand-total-row .score-cell {
+            color: white;
+            font-size: 12px;
+        }
         .signature-section {
             margin-top: 30px;
             page-break-inside: avoid;
@@ -301,14 +332,18 @@
                 <th style="width:50%">Behavioral Indicator</th>
                 <th style="width:8%">Self Score</th>
                 <th style="width:8%">Supervisor Score</th>
-                <th style="width:16%">Supervisor Comment</th>
-                <th style="width:18%">Signature (Staff / Supervisor / HR)</th>
+                <th style="width:34%">Supervisor Comment</th>
             </tr>
         </thead>
         <tbody>
+            @php
+                $grandStaffTotal = 0;
+                $grandSupervisorTotal = 0;
+                $grandCount = 0;
+            @endphp
             @foreach($entries->groupBy(function($e){ return $e->question->appraisalFormKeyBehavior->appraisalFormCategory->name ?? 'General'; }) as $category => $categoryEntries)
                 <tr class="category-row">
-                    <td colspan="5">{{ $category }}</td>
+                    <td colspan="4">{{ $category }}</td>
                 </tr>
                 @php
                     $staffTotal = 0;
@@ -317,11 +352,15 @@
                 @endphp
                 @foreach($categoryEntries as $entry)
                     <tr>
-                        <td>{{ $entry->question->behavioral_indicators ?? '' }}</td>
+                        <td>
+                            <div>{{ $entry->question->behavioral_indicators ?? '' }}</div>
+                            @if($entry->question->dhivehi_behavioral_indicators ?? null)
+                                <div class="arabic-text">{{ $entry->question->dhivehi_behavioral_indicators }}</div>
+                            @endif
+                        </td>
                         <td class="score-cell">{{ $entry->staff_score ?? '-' }}</td>
                         <td class="score-cell">{{ $entry->supervisor_score ?? '-' }}</td>
                         <td>{{ $entry->supervisor_comment ?? '-' }}</td>
-                        <td></td>
                     </tr>
                     @php
                         if ($entry->staff_score) {
@@ -337,10 +376,22 @@
                         <td class="score-cell">{{ number_format(($staffTotal / ($count * 5)) * 100, 1) }}%</td>
                         <td class="score-cell">{{ number_format(($supervisorTotal / ($count * 5)) * 100, 1) }}%</td>
                         <td></td>
-                        <td></td>
                     </tr>
+                    @php
+                        $grandStaffTotal += $staffTotal;
+                        $grandSupervisorTotal += $supervisorTotal;
+                        $grandCount += $count;
+                    @endphp
                 @endif
             @endforeach
+            @if($grandCount > 0)
+                <tr class="grand-total-row">
+                    <td><strong>GRAND TOTAL %</strong></td>
+                    <td class="score-cell">{{ number_format(($grandStaffTotal / ($grandCount * 5)) * 100, 1) }}%</td>
+                    <td class="score-cell">{{ number_format(($grandSupervisorTotal / ($grandCount * 5)) * 100, 1) }}%</td>
+                    <td></td>
+                </tr>
+            @endif
         </tbody>
     </table>
 

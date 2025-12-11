@@ -571,24 +571,26 @@ Route::get('/appraisal-results/{record}/pdf', function ($record) {
         'entries' => $entries,
     ];
 
-//    // Try to use barryvdh/laravel-dompdf if available
-//    if (class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
-//        return \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.appraisal-results', $data)
-//            ->setPaper('a4', 'landscape')
-//            ->download('appraisal-results-' . $assigned->id . '.pdf');
-//    }
+    // Try to use barryvdh/laravel-dompdf if available
+    if (class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
+        return \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.appraisal-results', $data)
+            ->setPaper('a4', 'landscape')
+            ->setOption('isRemoteEnabled', true)
+            ->setOption('isPhpEnabled', true)
+            ->stream('appraisal-results-' . $assigned->id . '.pdf');
+    }
 
     // Try to use Dompdf directly if available
-    if (class_exists(\Dompdf\Dompdf::class)) {
-        $html = view('pdf.appraisal-results', $data)->render();
-        $dompdf = new \Dompdf\Dompdf();
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'landscape');
-        $dompdf->render();
-        return response($dompdf->output())
-            ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'inline; filename="appraisal-results-' . $assigned->id . '.pdf"');
-    }
+//    if (class_exists(\Dompdf\Dompdf::class)) {
+//        $html = view('pdf.appraisal-results', $data)->render();
+//        $dompdf = new \Dompdf\Dompdf();
+//        $dompdf->loadHtml($html);
+//        $dompdf->setPaper('A4', 'landscape');
+//        $dompdf->render();
+//        return response($dompdf->output())
+//            ->header('Content-Type', 'application/pdf')
+//            ->header('Content-Disposition', 'inline; filename="appraisal-results-' . $assigned->id . '.pdf"');
+//    }
 
     // If no PDF library is available, show error message
     abort(500, 'PDF library not installed. Please run: composer require barryvdh/laravel-dompdf');
