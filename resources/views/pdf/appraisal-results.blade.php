@@ -177,6 +177,67 @@
             background: #fef3c7;
             color: #92400e;
         }
+        .totals-row {
+            background: #ecfdf5;
+            font-weight: bold;
+            color: #047857;
+            font-size: 11px;
+            border: 1px solid #6ee7b7;
+        }
+        .totals-row td {
+            padding: 8px 6px;
+            border: 1px solid #6ee7b7;
+            background: #ecfdf5;
+        }
+        .signature-section {
+            margin-top: 30px;
+            page-break-inside: avoid;
+        }
+        .signature-grid {
+            display: table;
+            width: 100%;
+            margin-top: 15px;
+        }
+        .signature-item {
+            display: table-cell;
+            width: 33.33%;
+            padding: 15px 10px;
+            text-align: center;
+            vertical-align: top;
+        }
+        .signature-line {
+            border-top: 1px solid #000;
+            margin-top: 40px;
+            margin-bottom: 5px;
+            min-height: 40px;
+            position: relative;
+        }
+        .signature-line::before {
+            content: 'Signature';
+            display: block;
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            font-size: 14px;
+            color: #000;
+            opacity: 0.2;
+            font-weight: bold;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+        .signature-label {
+            font-weight: bold;
+            font-size: 11px;
+            color: #333;
+            margin-top: 5px;
+        }
+        .signature-date {
+            font-size: 10px;
+            color: #666;
+            margin-top: 3px;
+        }
     </style>
 </head>
 <body>
@@ -237,25 +298,48 @@
     <table>
         <thead>
             <tr>
-                <th style="width:60%">Behavioral Indicator</th>
-                <th style="width:10%">Self Score</th>
-                <th style="width:10%">Supervisor Score</th>
-                <th style="width:20%">Supervisor Comment</th>
+                <th style="width:50%">Behavioral Indicator</th>
+                <th style="width:8%">Self Score</th>
+                <th style="width:8%">Supervisor Score</th>
+                <th style="width:16%">Supervisor Comment</th>
+                <th style="width:18%">Signature (Staff / Supervisor / HR)</th>
             </tr>
         </thead>
         <tbody>
             @foreach($entries->groupBy(function($e){ return $e->question->appraisalFormKeyBehavior->appraisalFormCategory->name ?? 'General'; }) as $category => $categoryEntries)
                 <tr class="category-row">
-                    <td colspan="4">{{ $category }}</td>
+                    <td colspan="5">{{ $category }}</td>
                 </tr>
+                @php
+                    $staffTotal = 0;
+                    $supervisorTotal = 0;
+                    $count = 0;
+                @endphp
                 @foreach($categoryEntries as $entry)
                     <tr>
                         <td>{{ $entry->question->behavioral_indicators ?? '' }}</td>
                         <td class="score-cell">{{ $entry->staff_score ?? '-' }}</td>
                         <td class="score-cell">{{ $entry->supervisor_score ?? '-' }}</td>
                         <td>{{ $entry->supervisor_comment ?? '-' }}</td>
+                        <td></td>
                     </tr>
+                    @php
+                        if ($entry->staff_score) {
+                            $staffTotal += $entry->staff_score;
+                            $supervisorTotal += $entry->supervisor_score ?? 0;
+                            $count++;
+                        }
+                    @endphp
                 @endforeach
+                @if($count > 0)
+                    <tr class="totals-row">
+                        <td><strong>Section Total %</strong></td>
+                        <td class="score-cell">{{ number_format(($staffTotal / ($count * 5)) * 100, 1) }}%</td>
+                        <td class="score-cell">{{ number_format(($supervisorTotal / ($count * 5)) * 100, 1) }}%</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                @endif
             @endforeach
         </tbody>
     </table>
@@ -274,6 +358,26 @@
         <div class="comment-box hr-comment">
             <div class="comment-label">HR Comments:</div>
             <div class="comment-text">{{ $assigned->hr_comment ?? 'No comments provided.' }}</div>
+        </div>
+    </div>
+
+    <div class="signature-section">
+        <div class="signature-grid">
+            <div class="signature-item">
+                <div class="signature-line"></div>
+                <div class="signature-label">{{ $assigned->staff->name ?? '' }} </div>
+                <div class="signature-date">Date: ______________</div>
+            </div>
+            <div class="signature-item">
+                <div class="signature-line"></div>
+                <div class="signature-label">{{$assigned->supervisor->name?? '' }}</div>
+                <div class="signature-date">Date: ______________</div>
+            </div>
+            <div class="signature-item">
+                <div class="signature-line"></div>
+                <div class="signature-label">HR Signature</div>
+                <div class="signature-date">Date: ______________</div>
+            </div>
         </div>
     </div>
 
