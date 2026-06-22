@@ -2,8 +2,7 @@
 
 namespace App\Enum;
 
-use Filament\Support\Contracts\HasLabel;
-enum AppraisalFormType: string implements HasLabel
+enum AppraisalFormType: string
 {
     case MidYear = 'mid-year';
     case YearEnd = 'year-end';

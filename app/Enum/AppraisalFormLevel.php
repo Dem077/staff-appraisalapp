@@ -2,8 +2,7 @@
 
 namespace App\Enum;
 
-use Filament\Support\Contracts\HasLabel;
-enum AppraisalFormLevel: string implements HasLabel
+enum AppraisalFormLevel: string
 {
     case Level1 = 'level_1';
     case Level2 = 'level_2';

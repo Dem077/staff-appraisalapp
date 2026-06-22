@@ -2,9 +2,7 @@
 
 namespace App\Enum;
 
-use Filament\Support\Contracts\HasColor;
-use Filament\Support\Contracts\HasLabel;
-enum HODFormassigneeType: string implements HasLabel , HasColor
+enum HODFormassigneeType: string
 {
     case Manager = 'manager';
     case CoWorker = 'co-worker';

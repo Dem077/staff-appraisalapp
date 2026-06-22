@@ -2,45 +2,34 @@
 
 namespace App\Providers;
 
-use App\Policies\ActivityPolicy;
-use Filament\Actions\MountableAction;
-use Filament\Notifications\Livewire\Notifications;
-use Filament\Notifications\Notification;
-use Filament\Pages\Page;
-use Filament\Support\Enums\Alignment;
-use Filament\Support\Enums\VerticalAlignment;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Validation\ValidationException;
-use Spatie\Activitylog\Models\Activity;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        Gate::policy(Activity::class, ActivityPolicy::class);
-        Page::formActionsAlignment(Alignment::Right);
-        Notifications::alignment(Alignment::End);
-        Notifications::verticalAlignment(VerticalAlignment::End);
-        Page::$reportValidationErrorUsing = function (ValidationException $exception) {
-            Notification::make()
-                ->title($exception->getMessage())
-                ->danger()
-                ->send();
-        };
-        MountableAction::configureUsing(function (MountableAction $action) {
-            $action->modalFooterActionsAlignment(Alignment::Right);
+        Blade::directive('pdfThaana', function (string $expression) {
+            return "<?php echo \\App\\Support\\PdfThaana::html({$expression}); ?>";
         });
+
+        Blade::directive('pdfThaanaIndicator', function (string $expression) {
+            return "<?php echo \\App\\Support\\PdfThaana::html({$expression}, true, 'indicator'); ?>";
+        });
+
+        Blade::directive('pdfText', function (string $expression) {
+            return "<?php echo \\App\\Support\\PdfThaana::html({$expression}, false); ?>";
+        });
+
+        \Illuminate\Support\Facades\Route::bind('key_behavior', fn (string $value) => \App\Models\AppraisalFormKeyBehavior::findOrFail($value));
+        \Illuminate\Support\Facades\Route::bind('assignee', fn (string $value) => \App\Models\HodFormAssignee::findOrFail($value));
+        \Illuminate\Support\Facades\Route::bind('hodAssignment', fn (string $value) => \App\Models\FormsAssignedToHod::findOrFail($value));
+        \Illuminate\Support\Facades\Route::bind('assignment', fn (string $value) => \App\Models\AppraisalFormAssignedToStaff::findOrFail($value));
+        \Illuminate\Support\Facades\Route::bind('role', fn (string $value) => \Spatie\Permission\Models\Role::findOrFail($value));
     }
 }

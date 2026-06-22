@@ -2,10 +2,7 @@
 
 namespace App\Enum;
 
-use App\Services\Shortcuts;
-use Filament\Support\Contracts\HasColor;
-use Filament\Support\Contracts\HasLabel;
-enum AssignedFormStatus: string implements HasLabel , HasColor
+enum AssignedFormStatus: string
 {
     case PendingQuestionnaireEdit = 'pending_questionnaire_edit';
     case PendingStaff = 'pending_staff_appraisal';

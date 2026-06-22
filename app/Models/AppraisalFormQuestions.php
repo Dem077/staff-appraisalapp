@@ -10,6 +10,7 @@ class AppraisalFormQuestions extends Model
         'appraisal_form_key_behavior_id',
         'behavioral_indicators',
         'dhivehi_behavioral_indicators',
+        'sort_order',
     ];
     public function appraisalFormKeyBehavior()
     {

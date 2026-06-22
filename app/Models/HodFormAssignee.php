@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Enum\HODFormassigneeType;
 use Illuminate\Database\Eloquent\Model;
 
-class HodFormassignee extends Model
+class HodFormAssignee extends Model
 {
 
     protected $table = 'hod_form_assignees';

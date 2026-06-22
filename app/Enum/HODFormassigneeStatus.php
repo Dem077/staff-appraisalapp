@@ -2,9 +2,7 @@
 
 namespace App\Enum;
 
-use Filament\Support\Contracts\HasColor;
-use Filament\Support\Contracts\HasLabel;
-enum HODFormassigneeStatus: string implements HasLabel , HasColor
+enum HODFormassigneeStatus: string
 {
     case PendingStaff = 'pending_staff_appraisal';
     case PendingAssignee = 'pending_assignee_appraisal';

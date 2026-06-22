@@ -2,337 +2,283 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Staff Appraisal Results</title>
     <style>
-        @font-face {
-            font-family: 'faruma';
-            src: url('{{ public_path("fonts/Faruma.ttf") }}') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-        }
-        @page {
-            size: A4 landscape;
-            margin: 15mm 10mm;
-        }
         body {
-            font-family: DejaVu Sans, Arial, Helvetica, sans-serif;
-            font-size: 11px;
+            font-family: dejavusans, sans-serif;
+            font-size: 12px;
             color: #333;
-            line-height: 1.5;
-        }
-        .arabic-text {
-            font-family: 'faruma', DejaVu Sans, Arial, sans-serif;
-            direction: rtl;
-            font-size: 14px;
-            color: #666;
-            margin-top: 4px;
-        }
-        .header {
-            display: block;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            padding-top: 0;
-            margin-top: 0;
-            border-bottom: 3px solid #059669;
-            position: relative;
-            min-height: 80px;
-        }
-        .logo-container {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 150px;
-        }
-        .logo {
-            max-height: 70px;
+            line-height: 1.75;
             margin: 0;
             padding: 0;
-            display: block;
+        }
+        .header-table {
+            width: 100%;
+            border-bottom: 3px solid #059669;
+            margin-bottom: 12px;
+        }
+        .header-table td {
+            border: none;
+            padding: 0 0 10px 0;
+            vertical-align: middle;
+        }
+        .logo {
+            height: 65px;
             width: auto;
         }
-        .header-content {
-            text-align: center;
-            padding-top: 5px;
-        }
         .document-title {
-            font-size: 18px;
+            font-size: 19px;
             font-weight: bold;
             color: #047857;
-            margin: 0 0 5px 0;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
+            text-align: center;
+            line-height: 1.4;
         }
         .form-name {
             font-size: 12px;
             color: #6b7280;
-            margin: 0;
+            text-align: center;
+            margin-top: 4px;
+            line-height: 1.75;
         }
-        .meta-section {
-            background: #f0fdf4;
-            padding: 12px 15px;
-            margin-bottom: 15px;
-            border-radius: 4px;
+        .meta-table {
+            width: 100%;
+            background-color: #f0fdf4;
             border-left: 4px solid #059669;
+            margin-bottom: 12px;
         }
-        .meta-row {
-            display: inline-block;
-            width: 48%;
-            margin-bottom: 8px;
+        .meta-table td {
+            padding: 8px 10px;
+            font-size: 12px;
+            line-height: 1.75;
             vertical-align: top;
+            border: none;
         }
         .meta-label {
             font-weight: bold;
             color: #047857;
-            display: inline-block;
-            width: 120px;
-            font-size: 11px;
         }
-        .meta-value {
-            color: #374151;
-            font-size: 11px;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            max-width: 300px;
-        }
-        table {
+        .data-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
-            font-size: 10px;
+            margin-top: 8px;
+            font-size: 12px;
+            line-height: 1.75;
         }
-        th {
-            background: #047857;
-            color: white;
+        .data-table th {
+            background-color: #047857;
+            color: #ffffff;
             padding: 8px 6px;
             text-align: left;
             font-weight: bold;
             border: 1px solid #065f46;
+            font-size: 12px;
+            line-height: 1.75;
         }
-        td {
+        .data-table td {
             border: 1px solid #d1d5db;
             padding: 8px 6px;
             vertical-align: top;
-            background: white;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-        }
-        .category-row {
-            background: #d1fae5;
-            font-weight: bold;
-            color: #047857;
-            font-size: 11px;
+            background-color: #ffffff;
+            line-height: 1.75;
         }
         .category-row td {
-            padding: 8px 6px;
+            background-color: #d1fae5;
+            font-weight: bold;
+            color: #047857;
+            font-size: 12px;
+            line-height: 1.75;
             border: 1px solid #6ee7b7;
+            padding: 8px 6px;
         }
         .score-cell {
             text-align: center;
             font-weight: bold;
             color: #059669;
-            font-size: 11px;
         }
-        .comments-section {
-            margin-top: 20px;
-            page-break-inside: avoid;
+        .indicator-en {
+            margin-bottom: 6px;
+        }
+        .totals-row td {
+            background-color: #ecfdf5;
+            font-weight: bold;
+            color: #047857;
+            border: 1px solid #6ee7b7;
+            padding: 8px 6px;
+            font-size: 12px;
+            line-height: 1.75;
+        }
+        .grand-total-row td {
+            background-color: #047857;
+            font-weight: bold;
+            color: #ffffff;
+            border: 2px solid #065f46;
+            padding: 8px 6px;
+            font-size: 12px;
+            line-height: 1.75;
+        }
+        .grand-total-row .score-cell {
+            color: #ffffff;
+        }
+        .comments-table {
+            width: 100%;
+            margin-top: 15px;
+        }
+        .comments-table td {
+            border: none;
+            padding: 0 0 8px 0;
+            vertical-align: top;
         }
         .comment-box {
-            background: #f8fafc;
+            background-color: #f8fafc;
             padding: 10px 12px;
-            margin-bottom: 10px;
-            border-radius: 4px;
             border-left: 4px solid #6b7280;
         }
-        .comment-box.staff-comment {
+        .comment-box-staff {
             border-left-color: #059669;
         }
-        .comment-box.supervisor-comment {
+        .comment-box-supervisor {
             border-left-color: #dc2626;
         }
-        .comment-box.hr-comment {
+        .comment-box-hr {
             border-left-color: #059669;
         }
         .comment-label {
             font-weight: bold;
             color: #047857;
+            font-size: 12px;
+            line-height: 1.75;
             margin-bottom: 6px;
-            font-size: 11px;
         }
         .comment-text {
             color: #374151;
-            line-height: 1.6;
-            font-size: 11px;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
+            font-size: 12px;
+            line-height: 1.75;
         }
-        .footer {
+        .comment-text table {
+            width: 100%;
+        }
+        .signature-table {
+            width: 100%;
             margin-top: 20px;
-            padding-top: 10px;
-            border-top: 1px solid #d1d5db;
+        }
+        .signature-table td {
+            width: 33%;
             text-align: center;
-            font-size: 9px;
-            color: #6b7280;
+            vertical-align: top;
+            padding: 10px 8px;
+            border: none;
+        }
+        .signature-placeholder {
+            font-size: 11px;
+            color: #cccccc;
+            margin-bottom: 25px;
+            line-height: 1.75;
+        }
+        .signature-line {
+            border-top: 1px solid #000000;
+            padding-top: 4px;
+            font-weight: bold;
+            font-size: 12px;
+            line-height: 1.75;
+        }
+        .signature-date {
+            font-size: 12px;
+            color: #666666;
+            margin-top: 4px;
+            line-height: 1.75;
         }
         .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 10px;
+            background-color: #d1fae5;
+            color: #065f46;
+            padding: 2px 8px;
+            font-size: 12px;
+            line-height: 1.75;
             font-weight: bold;
             text-transform: uppercase;
         }
-        .status-complete {
-            background: #d1fae5;
-            color: #065f46;
-        }
         .status-pending {
-            background: #fef3c7;
+            background-color: #fef3c7;
             color: #92400e;
-        }
-        .totals-row {
-            background: #ecfdf5;
-            font-weight: bold;
-            color: #047857;
-            font-size: 11px;
-            border: 1px solid #6ee7b7;
-        }
-        .totals-row td {
-            padding: 8px 6px;
-            border: 1px solid #6ee7b7;
-            background: #ecfdf5;
-        }
-        .grand-total-row {
-            background: #047857;
-            font-weight: bold;
-            color: white;
-            font-size: 12px;
-            border: 2px solid #065f46;
-        }
-        .grand-total-row td {
-            padding: 10px 6px;
-            border: 2px solid #065f46;
-            background: #047857;
-            color: white;
-        }
-        .grand-total-row .score-cell {
-            color: white;
-            font-size: 12px;
-        }
-        .signature-section {
-            margin-top: 30px;
-            page-break-inside: avoid;
-        }
-        .signature-grid {
-            display: table;
-            width: 100%;
-            margin-top: 15px;
-        }
-        .signature-item {
-            display: table-cell;
-            width: 33.33%;
-            padding: 15px 10px;
-            text-align: center;
-            vertical-align: top;
-        }
-        .signature-line {
-            border-top: 1px solid #000;
-            margin-top: 40px;
-            margin-bottom: 5px;
-            min-height: 40px;
-            position: relative;
-        }
-        .signature-line::before {
-            content: 'Signature';
-            display: block;
-            position: absolute;
-            top: -40px;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-            font-size: 14px;
-            color: #000;
-            opacity: 0.2;
-            font-weight: bold;
-            letter-spacing: 1px;
-            white-space: nowrap;
-        }
-        .signature-label {
-            font-weight: bold;
-            font-size: 11px;
-            color: #333;
-            margin-top: 5px;
-        }
-        .signature-date {
-            font-size: 10px;
-            color: #666;
-            margin-top: 3px;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="logo-container">
-            @php
-                $logoPath = public_path('images/agrologo.png');
-                if (file_exists($logoPath)) {
-                    $logoData = base64_encode(file_get_contents($logoPath));
-                    $logoMime = 'image/png';
-                    $logoSrc = 'data:' . $logoMime . ';base64,' . $logoData;
-                } else {
-                    $logoSrc = '';
-                }
-            @endphp
-            @if($logoSrc)
-                <img src="{{ $logoSrc }}" alt="Company Logo" class="logo">
-            @endif
+    <htmlpagefooter name="appraisalFooter">
+        <div style="text-align: center; font-size: 11px; color: #6b7280; border-top: 1px solid #d1d5db; padding-top: 4px; line-height: 1.5;">
+            <div>Generated on {{ date('F d, Y \a\t h:i A') }} | Confidential Document</div>
+            <div style="margin-top: 2px;">Page {PAGENO} of {nbpg}</div>
         </div>
+    </htmlpagefooter>
+    <sethtmlpagefooter name="appraisalFooter" value="on" />
 
-        <div class="header-content">
-            <div class="document-title">Staff Appraisal Report</div>
-            <div class="form-name">{{ $assigned->appraisalForm->name ?? 'Performance Appraisal Form' }}</div>
-        </div>
-    </div>
+    @php
+        $logoPath = public_path('images/agrologo.png');
+        $logoSrc = '';
+        if (file_exists($logoPath)) {
+            $logoSrc = 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath));
+        }
+    @endphp
 
-    <div class="meta-section">
-        <div class="meta-row">
-            <span class="meta-label">Employee Name:</span>
-            <span class="meta-value">{{ $assigned->staff->name ?? '-' }}</span>
-        </div>
-        <div class="meta-row">
-            <span class="meta-label">Employee ID:</span>
-            <span class="meta-value">{{ $assigned->staff->emp_no ?? '-' }}</span>
-        </div>
-        <div class="meta-row">
-            <span class="meta-label">Supervisor:</span>
-            <span class="meta-value">{{ $assigned->supervisor->name ?? '-' }}</span>
-        </div>
-        <div class="meta-row">
-            <span class="meta-label">Appraisal Date:</span>
-            <span class="meta-value">{{ $assigned->assigned_date ?? '-' }}</span>
-        </div>
-        <div class="meta-row">
-            <span class="meta-label">Form ID:</span>
-            <span class="meta-value">#{{ $assigned->id }}</span>
-        </div>
-        <div class="meta-row">
-            <span class="meta-label">Status:</span>
-            <span class="meta-value">
-                <span class="status-badge {{ $assigned->status->value == 'complete' ? 'status-complete' : 'status-pending' }}">
+    <table class="header-table" cellpadding="0" cellspacing="0">
+        <tr>
+            <td width="18%" align="left" valign="middle">
+                @if($logoSrc)
+                    <img src="{{ $logoSrc }}" alt="Logo" class="logo">
+                @endif
+            </td>
+            <td width="64%" align="center" valign="middle">
+                <div class="document-title">Staff Appraisal Report</div>
+                <div class="form-name">@pdfText($assigned->appraisalForm->name ?? 'Performance Appraisal Form')</div>
+            </td>
+            <td width="18%">&nbsp;</td>
+        </tr>
+    </table>
+
+    <table class="meta-table" cellpadding="0" cellspacing="0">
+        <tr>
+            <td width="50%">
+                <span class="meta-label">Employee Name:</span>
+                @pdfText($assigned->staff->name ?? '-')
+            </td>
+            <td width="50%">
+                <span class="meta-label">Employee ID:</span>
+                {{ $assigned->staff->emp_no ?? '-' }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="meta-label">Supervisor:</span>
+                @pdfText($assigned->supervisor->name ?? '-')
+            </td>
+            <td>
+                <span class="meta-label">Appraisal Date:</span>
+                {{ $assigned->assigned_date ?? '-' }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="meta-label">Form ID:</span>
+                #{{ $assigned->id }}
+            </td>
+            <td>
+                <span class="meta-label">Status:</span>
+                <span class="status-badge {{ $assigned->status->value == 'complete' ? '' : 'status-pending' }}">
                     {{ $assigned->status->getLabel() ?? ucfirst(str_replace('_', ' ', $assigned->status->value)) }}
                 </span>
-            </span>
-        </div>
-    </div>
+            </td>
+        </tr>
+    </table>
 
-    <table>
+    <table class="data-table" cellpadding="0" cellspacing="0">
         <thead>
             <tr>
-                <th style="width:50%">Behavioral Indicator</th>
-                <th style="width:8%">Self Score</th>
-                <th style="width:8%">Supervisor Score</th>
-                <th style="width:34%">Supervisor Comment</th>
+                <th width="50%">Behavioral Indicator</th>
+                <th width="8%">Self Score</th>
+                <th width="8%">Supervisor Score</th>
+                <th width="34%">Supervisor Comment</th>
             </tr>
         </thead>
         <tbody>
@@ -341,9 +287,11 @@
                 $grandSupervisorTotal = 0;
                 $grandCount = 0;
             @endphp
-            @foreach($entries->groupBy(function($e){ return $e->question->appraisalFormKeyBehavior->appraisalFormCategory->name ?? 'General'; }) as $category => $categoryEntries)
+            @foreach($entries->groupBy(function ($e) {
+                return $e->question?->appraisalFormKeyBehavior?->appraisalFormCategory?->name ?? 'General';
+            }) as $category => $categoryEntries)
                 <tr class="category-row">
-                    <td colspan="4">{{ $category }}</td>
+                    <td colspan="4">@pdfText($category)</td>
                 </tr>
                 @php
                     $staffTotal = 0;
@@ -353,9 +301,9 @@
                 @foreach($categoryEntries as $entry)
                     <tr>
                         <td>
-                            <div>{{ $entry->question->behavioral_indicators ?? '' }}</div>
-                            @if($entry->question->dhivehi_behavioral_indicators ?? null)
-                                <div class="arabic-text">{{ $entry->question->dhivehi_behavioral_indicators }}</div>
+                            <div class="indicator-en">{{ $entry->question?->behavioral_indicators ?? '' }}</div>
+                            @if($entry->question?->dhivehi_behavioral_indicators)
+                                @pdfThaanaIndicator($entry->question->dhivehi_behavioral_indicators)
                             @endif
                         </td>
                         <td class="score-cell">{{ $entry->staff_score ?? '-' }}</td>
@@ -395,45 +343,51 @@
         </tbody>
     </table>
 
-    <div class="comments-section">
-        <div class="comment-box staff-comment">
-            <div class="comment-label">Employee Comments:</div>
-            <div class="comment-text">{{ $assigned->staff_comment ?? 'No comments provided.' }}</div>
-        </div>
+    <table class="comments-table" cellpadding="0" cellspacing="0">
+        <tr>
+            <td>
+                <div class="comment-box comment-box-staff">
+                    <div class="comment-label">Employee Comments:</div>
+                    <div class="comment-text">@pdfThaana($assigned->staff_comment ?? 'No comments provided.')</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="comment-box comment-box-supervisor">
+                    <div class="comment-label">Supervisor Comments:</div>
+                    <div class="comment-text">@pdfThaana($assigned->supervisor_comment ?? 'No comments provided.')</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="comment-box comment-box-hr">
+                    <div class="comment-label">HR Comments:</div>
+                    <div class="comment-text">@pdfThaana($assigned->hr_comment ?? 'No comments provided.')</div>
+                </div>
+            </td>
+        </tr>
+    </table>
 
-        <div class="comment-box supervisor-comment">
-            <div class="comment-label">Supervisor Comments:</div>
-            <div class="comment-text">{{ $assigned->supervisor_comment ?? 'No comments provided.' }}</div>
-        </div>
-
-        <div class="comment-box hr-comment">
-            <div class="comment-label">HR Comments:</div>
-            <div class="comment-text">{{ $assigned->hr_comment ?? 'No comments provided.' }}</div>
-        </div>
-    </div>
-
-    <div class="signature-section">
-        <div class="signature-grid">
-            <div class="signature-item">
-                <div class="signature-line"></div>
-                <div class="signature-label">{{ $assigned->staff->name ?? '' }} </div>
+    <table class="signature-table" cellpadding="0" cellspacing="0">
+        <tr>
+            <td>
+                <div class="signature-placeholder">Signature</div>
+                <div class="signature-line">@pdfText($assigned->staff->name ?? '')</div>
                 <div class="signature-date">Date: ______________</div>
-            </div>
-            <div class="signature-item">
-                <div class="signature-line"></div>
-                <div class="signature-label">{{$assigned->supervisor->name?? '' }}</div>
+            </td>
+            <td>
+                <div class="signature-placeholder">Signature</div>
+                <div class="signature-line">@pdfText($assigned->supervisor->name ?? '')</div>
                 <div class="signature-date">Date: ______________</div>
-            </div>
-            <div class="signature-item">
-                <div class="signature-line"></div>
-                <div class="signature-label">HR Signature</div>
+            </td>
+            <td>
+                <div class="signature-placeholder">Signature</div>
+                <div class="signature-line">HR Signature</div>
                 <div class="signature-date">Date: ______________</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="footer">
-        Generated on {{ date('F d, Y \a\t h:i A') }} | Confidential Document
-    </div>
+            </td>
+        </tr>
+    </table>
 </body>
 </html>

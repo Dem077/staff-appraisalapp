@@ -2,20 +2,15 @@
 
 namespace App\Models;
 
-use BezhanSalleh\FilamentShield\Traits\HasPageShield;
-use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
-use Filament\Models\Contracts\FilamentUser;
-use Filament\Models\Contracts\HasAvatar;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
-use Filament\Panel;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Staff extends Authenticatable implements FilamentUser, HasAvatar
+class Staff extends Authenticatable
 {
-    use SoftDeletes,HasRoles, Notifiable, HasFactory, HasPanelShield;
+    use HasFactory, HasRoles, Notifiable, SoftDeletes;
 
     protected $guard_name = 'staff';
 
@@ -40,7 +35,7 @@ class Staff extends Authenticatable implements FilamentUser, HasAvatar
         'profile_photo_url',
         'external_id',
         'theme',
-        'theme_color'
+        'theme_color',
     ];
 
     protected $casts = [
@@ -50,25 +45,23 @@ class Staff extends Authenticatable implements FilamentUser, HasAvatar
         'is_annual_applicable' => 'boolean',
     ];
 
-    public function getFilamentAvatarUrl(): ?string
+    public function user()
     {
-        if ($this->avatar_url) {
-            return asset('storage/' . $this->avatar_url);
-        } else {
-            $hash = md5(strtolower(trim($this->email)));
-
-            return 'https://www.gravatar.com/avatar/' . $hash . '?d=mp&r=g&s=250';
-        }
+        return $this->hasOne(User::class);
     }
 
-    public function canAccessPanel(Panel $panel): bool
+    public function avatarUrl(): string
     {
-        return true;
+        if ($this->profile_photo_url) {
+            return $this->profile_photo_url;
+        }
+
+        return 'https://www.gravatar.com/avatar/'.md5(strtolower(trim($this->email ?? ''))).'?d=mp&r=g&s=250';
     }
 
     public function appraisalFormAssigned()
     {
-        return $this->hasMany(AppraisalFormAssignedToStaff::class , 'staff_id');
+        return $this->hasMany(AppraisalFormAssignedToStaff::class, 'staff_id');
     }
 
     public function supervisor()

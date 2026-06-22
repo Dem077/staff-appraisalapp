@@ -9,6 +9,7 @@ class AppraisalFormKeyBehavior extends Model
     protected $fillable = [
         'name',
         'appraisal_form_category_id',
+        'sort_order',
     ];
 
     public function getQuestCountAttribute()
@@ -22,6 +23,8 @@ class AppraisalFormKeyBehavior extends Model
 
     public function appraisalFormQuestions()
     {
-        return $this->hasMany(AppraisalFormQuestions::class, 'appraisal_form_key_behavior_id');
+        return $this->hasMany(AppraisalFormQuestions::class, 'appraisal_form_key_behavior_id')
+            ->orderBy('sort_order')
+            ->orderBy('id');
     }
 }

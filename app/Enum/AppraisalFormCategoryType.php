@@ -2,9 +2,7 @@
 
 namespace App\Enum;
 
-use Filament\Support\Contracts\HasColor;
-use Filament\Support\Contracts\HasLabel;
-enum AppraisalFormCategoryType: string implements HasLabel, HasColor
+enum AppraisalFormCategoryType: string
 {
     case FormLevel1 = 'form_level_1';
     case FormLevel2 = 'form_level_2';
@@ -13,14 +11,11 @@ enum AppraisalFormCategoryType: string implements HasLabel, HasColor
 
     public function getLabel(): ?string
     {
-        // return $this->name;
-
-         return match ($this) {
+        return match ($this) {
             self::FormLevel1 => 'Form Level 1',
             self::FormLevel2 => 'Form Level 2',
             self::FormLevel3 => 'Form Level 3',
-            self:: FormProbationary => 'Probationary Form',
-
+            self::FormProbationary => 'Probationary Form',
         };
     }
 
@@ -30,7 +25,7 @@ enum AppraisalFormCategoryType: string implements HasLabel, HasColor
             self::FormLevel1 => 'primary',
             self::FormLevel2 => 'warning',
             self::FormLevel3 => 'success',
-            self:: FormProbationary => 'gray',
+            self::FormProbationary => 'gray',
         };
     }
 }
