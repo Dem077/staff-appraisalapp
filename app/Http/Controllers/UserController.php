@@ -9,6 +9,7 @@ use App\Support\AuthContext;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
@@ -24,6 +25,7 @@ class UserController extends Controller
             'id' => $u->id,
             'name' => $u->name,
             'email' => $u->email,
+            'active' => $u->active,
             'roles' => $u->roles->pluck('name'),
             'linked_staff' => $u->staff?->only(['id', 'name', 'emp_no']),
             'created_at' => $u->created_at?->format('M d, Y'),
@@ -57,12 +59,14 @@ class UserController extends Controller
             'password' => ['required', 'confirmed', Password::defaults()],
             'role_ids' => ['nullable', 'array'],
             'staff_id' => ['nullable', 'exists:staff,id'],
+            'active' => ['boolean'],
         ]);
 
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'active' => $data['active'] ?? true,
         ]);
 
         if (! empty($data['role_ids'])) {
@@ -83,7 +87,7 @@ class UserController extends Controller
         $user->load('staff');
 
         return Inertia::render('Users/Form', [
-            'user' => $user->only(['id', 'name', 'email', 'staff_id']),
+            'user' => $user->only(['id', 'name', 'email', 'staff_id', 'active']),
             'roles' => \Spatie\Permission\Models\Role::where('guard_name', 'web')->pluck('name', 'id'),
             'userRoles' => $user->roles->pluck('id'),
             'linkedStaff' => $user->staff ? $this->formatStaffOption($user->staff) : null,
@@ -104,11 +108,19 @@ class UserController extends Controller
             'password' => ['nullable', 'confirmed', Password::defaults()],
             'role_ids' => ['nullable', 'array'],
             'staff_id' => ['nullable', 'exists:staff,id'],
+            'active' => ['boolean'],
         ]);
+
+        if (array_key_exists('active', $data) && ! $data['active'] && Auth::guard('web')->id() === $user->id) {
+            return back()->withErrors([
+                'active' => 'You cannot deactivate your own account.',
+            ]);
+        }
 
         $user->update([
             'name' => $data['name'],
             'email' => $data['email'],
+            'active' => $data['active'] ?? true,
         ]);
 
         if (! empty($data['password'])) {

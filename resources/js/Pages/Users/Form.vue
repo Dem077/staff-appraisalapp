@@ -22,6 +22,7 @@ const form = useForm({
     password_confirmation: '',
     role_ids: props.userRoles ?? [],
     staff_id: props.user?.staff_id ?? null,
+    active: props.user?.active ?? true,
 });
 
 const staffSearchParams = computed(() => ({
@@ -55,6 +56,12 @@ function submit() {
                         :hint="user ? 'Leave blank to keep current password' : ''"
                     />
                     <TextInput v-model="form.password_confirmation" label="Confirm password" type="password" />
+                    <label class="flex items-center gap-2.5 text-sm text-slate-700 dark:text-slate-300 cursor-pointer">
+                        <input v-model="form.active" type="checkbox" class="rounded border-slate-300 text-brand-600 focus:ring-brand-500/30" />
+                        Active
+                    </label>
+                    <p v-if="form.errors.active" class="text-xs text-red-600 dark:text-red-400">{{ form.errors.active }}</p>
+                    <p class="-mt-2 text-xs text-slate-500 dark:text-slate-400">Inactive users cannot sign in with their admin password.</p>
                     <SearchableSelect
                         v-model="form.staff_id"
                         label="Linked staff profile"

@@ -18,6 +18,7 @@ class User extends Authenticatable
         'email',
         'password',
         'staff_id',
+        'active',
     ];
 
     public function staff()
@@ -35,6 +36,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'active' => 'boolean',
         ];
     }
 

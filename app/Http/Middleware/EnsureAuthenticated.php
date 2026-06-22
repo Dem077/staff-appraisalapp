@@ -15,6 +15,14 @@ class EnsureAuthenticated
             return redirect()->route('login');
         }
 
+        if (auth('web')->check() && ! auth('web')->user()->active) {
+            auth('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()->route('login')->with('error', 'Your account has been deactivated.');
+        }
+
         return $next($request);
     }
 }

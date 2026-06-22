@@ -33,6 +33,7 @@ defineProps({ users: Object });
                                         <th>Email</th>
                                         <th>Linked staff</th>
                                         <th>Roles</th>
+                                        <th>Status</th>
                                         <th class="text-right">Actions</th>
                                     </tr>
                                 </thead>
@@ -51,6 +52,11 @@ defineProps({ users: Object });
                                                 </span>
                                             </div>
                                         </td>
+                                        <td>
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium" :class="u.active ? 'badge-emerald' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'">
+                                                {{ u.active ? 'Active' : 'Inactive' }}
+                                            </span>
+                                        </td>
                                         <td class="text-right">
                                             <ActionChip :href="`/users/${u.id}/edit`" variant="primary">Edit</ActionChip>
                                         </td>
@@ -62,6 +68,11 @@ defineProps({ users: Object });
 
                     <template #mobile="{ item: u }">
                         <RecordCard :title="u.name" :subtitle="u.email">
+                            <template #badge>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium" :class="u.active ? 'badge-emerald' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'">
+                                    {{ u.active ? 'Active' : 'Inactive' }}
+                                </span>
+                            </template>
                             <template #meta>
                                 <MetaItem v-if="u.linked_staff" label="Linked staff">{{ u.linked_staff.emp_no }} — {{ u.linked_staff.name }}</MetaItem>
                                 <div class="col-span-2 flex flex-wrap gap-1">

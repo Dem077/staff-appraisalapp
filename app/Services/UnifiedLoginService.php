@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Staff;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
@@ -32,9 +33,18 @@ class UnifiedLoginService
             }
         }
 
+        $user = User::query()->where('email', $identifier)->first();
+
+        if ($user && ! $user->active) {
+            throw ValidationException::withMessages([
+                'identifier' => 'This account has been deactivated. Contact an administrator.',
+            ]);
+        }
+
         if (! Auth::guard('web')->attempt([
             'email' => $identifier,
             'password' => $password,
+            'active' => true,
         ], $remember)) {
             throw ValidationException::withMessages([
                 'identifier' => 'These credentials do not match our records.',
